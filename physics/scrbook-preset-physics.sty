@@ -1,0 +1,125 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/physics/scrbook-preset-physics.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-physics}[2025/06/01 The physics package%
+of the `scrbook-preset` bundle]
+
+\RequirePackage{siunitx} % A comprehensive (SI) units package
+\RequirePackage[version = 4]{mhchem} % Typeset chemical
+% formulae/equations and H and P statements
+\RequirePackage{mleftright} % Variants of delimiters
+% that act as maths open/close
+
+% UNITS AND CONSTANTS
+%% Units in physics
+\DeclareSIUnit[unit-font-command =
+\mathit]{\alphaparticlemass}{\ensuremath{m_\alpha}}
+\DeclareSIUnit{\angstrom}{\textup{\AA}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\atomicmassofheliumfour}{\ensuremath{m_{\text{He}}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\atomicmassunit}{\ensuremath{m_{\text{u}}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\boltzmannconstant}{\ensuremath{k_{\text{B}}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\coulombconstant}{\ensuremath{k_{\text{e}}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\electronmass}{\ensuremath{m_{\text{e}}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\elementarycharge}{\ensuremath{e}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\gravitationalconstant}{\ensuremath{G}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\molargasconstant}{\ensuremath{R}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\neutronmass}{\ensuremath{m_{\text{n}}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\planckconstant}{\ensuremath{h}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\protiummass}{\ensuremath{m_{\text{H}}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\protonmass}{\ensuremath{m_{\text{p}}}}
+\newcommand*{\ra}{\rightascension}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\radiationdensityconstant}{\ensuremath{a}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\reducedplanckconstant}{\ensuremath{\hbar}}
+\DeclareSIUnit[unit-font-command = \mathit]{\speedoflight}{\ensuremath{c}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\standardgravity}{\ensuremath{g}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\stefanboltzmannconstant}{\ensuremath{\sigma}}
+
+% MATH-MODE MACROS
+%% Quantum mechanics
+%%% Dirac's bra–ket notation
+%%% Source:
+%%% https://www.latex-project.org/publications/2020-egreg-TUB-tb127gregorio-math.pdf
+\NewDocumentCommand{\bra}{som}{%
+  \IfBooleanTF{#1}
+  {\mleft\langle #3 \mright\rvert}
+  {%
+    \IfNoValueTF{#2}
+    {\langle#3\mathclose\rvert}
+    {\mathopen{#2\langle}#3\mathclose{#2\rvert}}%
+  }
+}
+\NewDocumentCommand{\ket}{som}{%
+  \IfBooleanTF{#1}
+  {\mleft\lvert #3 \mright\rangle}
+  , {%
+    \IfNoValueTF{#2}
+    {\mathopen\lvert#3\rangle}
+    {\mathopen{#2\lvert}#3\mathclose{#2\rangle}}%
+  }
+}
+\NewDocumentCommand{\braket}{som}{%
+  \IfBooleanTF{#1}
+  {\extensiblebraket{#3}}
+  {\fixedbraket{#2}{#3}}%
+}
+\ExplSyntaxOn
+\NewDocumentCommand{\extensiblebraket}{m}
+{
+  \group_begin:
+  \char_set_active_eq:nN { ‘| } \egreg_bar_auto:
+  \mathcode‘|="8000 \scan_stop:
+  \mleft\langle
+  #1
+  \mright\rangle
+  \group_end:
+}
+\NewDocumentCommand{\fixedbraket}{mm}
+{
+  \group_begin:
+  \char_set_active_eq:nN
+  { ‘| } % active char is |
+  \egreg_bar_fixed: % equal to
+  \mathcode‘|="8000 \scan_stop:
+  \IfNoValueTF{#1}
+  { \egreg_braket:n { #2 } }
+  { \egreg_braket:nn { #1 } { #2 } }
+  \group_end:
+}
+\cs_new_protected:Nn \egreg_bar_auto:
+{
+  \nonscript\,\middle\vert\nonscript\,
+}
+\cs_new_protected:Nn \egreg_bar_fixed:
+{
+  \mathinner{\egreg_size: \vert}
+}
+\cs_new_protected:Nn \egreg_braket:n
+{
+  \cs_set_protected:Nn \egreg_size: { }
+  \langle #1 \rangle
+}
+\cs_new_protected:Nn \egreg_braket:nn
+{
+  \cs_set_protected:Nn \egreg_size: { #1 }
+  \mathopen{\egreg_size: \langle}
+  #2
+  \mathclose{\egreg_size: \rangle}
+}
+\ExplSyntaxOff
+
+\endinput
