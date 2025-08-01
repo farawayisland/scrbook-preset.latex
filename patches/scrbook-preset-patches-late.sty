@@ -1,0 +1,47 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/patches/scrbook-preset-patches-late.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-patches-late}[2025/06/01 The patching-oriented%
+package of the `scrbook-preset` bundle which is loaded late]
+
+\RequirePackage{luacode} % Helper for executing lua code from within TeX
+\RequirePackage{scrbook-preset-library} % The library package of
+% the `scrbook-preset` bundle
+\RequirePackage{unicode-math} % Unicode mathematics support for XeTeX and LuaTeX
+
+% FONT PATCHES
+%% Load Asana-Math's stylistic alternate calligraphic 'R' glyph
+%% Source: https://tex.stackexchange.com/a/538972
+% \directlua{
+%   %% We want to stop the font loader from discarding names it considers
+%   %% useless, so enable keepnames
+%   fonts.privateoffsets.keepnames = true
+%   %% That's not quite enough because the font is most likely already
+%   %% cached without the names, so disable the cache
+%   %% Warning: This affects all fonts you load in this document from
+%   %% here on. This will make your document significantly slower.
+%   fonts.handlers.otf.cache.enabled = false
+%   fonts.handlers.otf.addfeature {
+%     name = "asana-salt-r",
+%     type = "substitution",
+%     data = {
+%       [0x211B] = "uni211B.salt"
+%     },
+%   }
+% }
+% %% \setmathfont[% https://ctan.org/tex-archive/fonts/Asana-Math
+% %%   Scale = 1,
+% %%   Style = Alternate,
+% %%   RawFeature = asana-salt-r,
+% %%   range = {cal, bfcal}
+% %% ]{Asana-Math.otf}
+
+%% Perform automatic kerning adjustments for various symbol and
+%% character combinations with LuaTeX
+%% Source: https://tex.stackexchange.com/a/432291
+%% `suppl_math_kerning` is defined in the `scrbook-preset-library-lua` module
+\newcommand{\SupplKernOn}{\directlua{luatexbase.add_to_callback (
+"process_input_buffer" , suppl_math_kerning , "suppl_math_kerning" ) }}
+\newcommand{\SupplKernOff}{\directlua{luatexbase.remove_from_callback (
+"process_input_buffer" , "suppl_math_kerning" ) }}
+
+\endinput
