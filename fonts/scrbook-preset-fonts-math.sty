@@ -1,0 +1,162 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/fonts/scrbook-preset-fonts-math.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-fonts-math}[2025/06/01 The mathematics module%
+of the fonts package of the `scrbook-preset` bundle]
+
+\RequirePackage[%
+  mathrm=sym,
+  mathsf=sym,
+  mathtt=sym,
+  mathbf=sym,
+  mathit=sym,
+  warnings-off={mathtools-colon, mathtools-overbracket}
+]{unicode-math} % Unicode mathematics support for XeTeX and LuaTeX
+
+% MATH FONTS
+%% Asana-Math
+\setmathfont[% https://ctan.org/tex-archive/fonts/Asana-Math
+  Scale = 1,
+  version = asana
+]{Asana-Math.otf}
+\setmathfont[%
+  Scale = 1
+]{Asana-Math.otf}
+\setmathfont[%
+  Scale = 1,
+  Style = Alternate,
+  range = {cal, bfcal}
+]{Asana-Math.otf}
+
+%% NewComputerModernMath
+\setmathfont[% https://ctan.org/tex-archive/fonts/newcomputermodern/otf
+  Scale = 1,
+  BoldFont = NewCMMath-Bold.otf,
+  version = newcm
+]{NewCMMath-Book.otf}
+\setmathfont[%
+  Scale = 1,
+  BoldFont = NewCMMath-Bold.otf,
+  range = {\ell}
+]{NewCMMath-Book.otf}
+\setmathfont[%
+  Scale = 0.6875,
+  BoldFont = NewCMMath-Bold.otf,
+  FakeBold = 2.1,
+  range = {\leftmoon}
+]{NewCMMath-Book.otf}
+
+%% Erewhon-Math
+\setmathfont[% https://ctan.org/tex-archive/fonts/erewhon-math
+  Scale = 1,
+  BoldFont = Erewhon-Math-Bold.otf,
+  version = erewhon
+]{Erewhon-Math.otf}
+% \setmathfont[%
+%   Scale = 1,
+%   BoldFont = Erewhon-Math-Bold.otf,
+%   range = {\int, \iint, \iiint, \oint, \oiint, \oiiint}
+% ]{Erewhon-Math.otf}
+
+%% Libertinus Math
+\setmathfont[% https://ctan.org/tex-archive/fonts/libertinus-fonts/otf
+  Scale = 1,
+  range = {\prod, \coprod, \sum}
+]{LibertinusMath-Regular}
+
+% MATHEMATICAL SYMBOLS
+%% Greek letters
+%%% Epsilon redefinitions
+\AtBeginDocument{%
+  \let\oldepsilon\epsilon
+  \let\oldvarepsilon\varepsilon
+  \def\varepsilon{\oldepsilon}
+  \def\epsilon{\oldvarepsilon}
+}
+
+%%% Phi redefinitions
+\AtBeginDocument{%
+  \let\oldphi\phi
+  \let\oldvarphi\varphi
+  \def\varphi{\oldphi}
+  \def\phi{\oldvarphi}
+}
+
+%% Operators
+%%% Integral redefinitions
+%%% https://tex.stackexchange.com/a/410872
+\AtBeginDocument{%
+  \let\oldint\int
+  \let\oldiint\iint
+  \let\oldiiint\iiint
+  \let\oldoint\oint
+  \let\oldoiint\oiint
+  \let\oldoiiint\oiiint
+  \NewDocumentCommand{\newintaux}{mm}{%
+    \NewDocumentCommand{#1}{t\limits e{_^}}{%
+      #2%
+      \IfBooleanT{##1}{\limits}%
+      \IfValueT{##2}{_{\mkern5mu ##2}}%
+      \IfValueT{##3}{^{\raisemath{-0.6pt}{\mkern1mu##3}}}%
+    }
+  }
+  \newintaux{\newint}{\oldint}
+  \newintaux{\newiint}{\oldiint}
+  \newintaux{\newiiint}{\oldiiint}
+  \newintaux{\newoint}{\oldoint}
+  \newintaux{\newoiint}{\oldoiint}
+  \newintaux{\newoiiint}{\oldoiiint}
+  \def\int{\newint}
+  \def\iint{\newiint}
+  \def\iiint{\newiiint}
+  \def\oint{\newoint}
+  \def\oiint{\newoiint}
+  \def\oiiint{\newoiiint}
+}
+
+% MATH-MODE MACROS
+%%% Comma-splitting macro
+%%% Source: https://tex.stackexchange.com/a/309558
+\ExplSyntaxOn
+\NewDocumentCommand{\splitatcommas}{m}
+{
+  \group_begin:
+  \int_compare:nNnF { \char_value_mathcode:n {`,} }= {"8000}
+  {
+    \char_set_active_eq:nN {`,} \__kennytm_comma:
+    \char_set_mathcode:nn {`,} {"8000}
+  }
+  #1
+  \group_end:
+}
+\cs_new_protected:Ne \__kennytm_comma:
+{
+  \mathchar\char_value_mathcode:n {`,}~
+  \penalty0~\exp_not:n { \hspace{0pt plus 1em} }
+}
+\ExplSyntaxOff
+
+%% Set theory
+%%% Set-theoretic binary operations
+%%%% Set difference
+%%%%% Source: https://tex.stackexchange.com/a/87117
+\AtBeginDocument{%
+  \NewCommandCopy{\oldsetminus}{\setminus}
+  \newcommand{\rsetminus}{\mathbin{\mathpalette\rsetminusaux\relax}}
+  \newcommand{\rsetminusaux}[2]{\mspace{-5mu}
+    \raisebox{\rsmraise{#1}\depth}{\rotatebox[origin =
+    c]{-20}{\(#1\oldsetminus\)}}
+    \mspace{-4mu}
+  }
+  \newcommand\rsmraise[1]{%
+    \ifx#1\displaystyle 0.6\else
+    \ifx#1\textstyle 0.6\else
+    \ifx#1\scriptstyle 0.4\else
+    0.25%
+    \fi
+    \fi
+  \fi}
+  \RenewCommandCopy{\setminus}{\rsetminus}
+  \newcommand*{\without}{\setminus}
+}
+
+\endinput

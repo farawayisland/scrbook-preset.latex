@@ -1,0 +1,599 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/math/scrbook-preset-math.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-math}[2025/06/01 The mathematics package%
+of the `scrbook-preset` bundle]
+
+\RequirePackage{mathtools} % Mathematical tools to use with `amsmath`
+\RequirePackage{amsthm} % Typesetting theorems (AMS style)
+% Must be loaded after `amsmath` (loaded by `mathtools`)
+\RequirePackage{centernot} % Centred \not command
+\RequirePackage{circuitikz} % Draw electrical networks with TikZ
+\ctikzset{
+  bipoles/crossing/size = 0.6,
+  bipoles/thickness = 1,
+  logic ports = ieee,
+  logic ports/scale = 0.5,
+  tripoles/thickness = 1,
+}
+\RequirePackage[italic]{derivative} % Nice and easy derivatives
+\RequirePackage{etoolbox} % E-TeX tools for LaTeX
+\RequirePackage{mleftright} % Variants of delimiters
+% that act as maths open/close
+\RequirePackage{scrbook-preset-library} % The library package of
+% the `scrbook-preset` bundle
+\RequirePackage{siunitx} % A comprehensive (SI) units package
+\sisetup{%
+  exponent-base = {10},
+  exponent-product = {\times },
+  group-separator = {.},
+  input-decimal-markers = {.},
+  input-ignore = {,},
+  inter-unit-product = {\,},
+  output-decimal-marker = {,},
+  quantity-product = {\ },
+  range-phrase = {\text{\ hingga\ }},
+  text-series-to-math = true,
+}
+\RequirePackage{tikz} % Create PostScript and PDF graphics in TeX
+\usetikzlibrary{calligraphy} % To enable calligraphic style drawings in TikZ
+\usetikzlibrary{decorations.pathreplacing} % Defines decorations that replace
+% the to-be-decorated path by another path
+\usetikzlibrary{intersections} % Allows automated calculation of path
+% intersections
+\RequirePackage{tikz-cd} % Create commutative diagrams with TikZ
+\tikzcdset{
+  arrow style = tikz,
+  diagrams = {
+    shorten = 4pt,
+    % >={Circle[scale = 0.675, length = 5pt]}
+    % >={Stealth[inset = 2.5pt, round]}
+    >={Straight Barb[round, scale = 0.675, width = 7pt]}
+  },
+}
+
+% MATHEMATICAL SYMBOLS
+%% Binary relations
+%%% Equality
+%%%% Equality by definition
+\newcommand*{\defeq}{\coloneq}
+\newcommand*{\eqdef}{\eqcolon}
+
+%%%% Questionable equality
+\newcommand*{\questioneq}{\overset{?}{=}}
+
+%% Binary operations
+%%% Division sign (must be defined before the redefinition of \div)
+\newcommand*{\divsign}{÷}
+
+%%% Slash notation for division and fractions
+\NewDocumentCommand{\sfrac}{s o D<>{} m m}{%
+  \IfBooleanTF{#1}{\mleft.#4#3\middle/#3#5\mright.}{%
+    \IfNoValueTF{#2}{#4#3/#3#5}{%
+      \IfStringsEqualTF{#2}{big}{#4#3\big/#3#5}{%
+        \IfStringsEqualTF{#2}{Big}{#4#3\Big/#3#5}{%
+          \IfStringsEqualTF{#2}{bigg}{#4#3\bigg/#3#5}{%
+            \IfStringsEqualTF{#2}{Bigg}{#4#3\Bigg/#3#5}{%
+              #4#3/#3#5
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+%% Operators
+%%% Logarithms
+\newcommand*{\binarylog}{\log_{2}}
+\newcommand*{\commonlog}{\log_{10}}
+\newcommand*{\naturallog}{\ln}
+
+%%% Differentials
+\newcommand*{\dd}{\odif}
+
+%%% Del operators
+\newcommand*{\grad}{\nabla}
+\AtBeginDocument{\renewcommand*{\div}{\nabla\cdot}}
+\newcommand*{\curl}{\nabla\times}
+\newcommand*{\laplacian}{\nabla^2}
+
+%%% Integrals
+
+%%% QED symbol
+\renewcommand*{\qedsymbol}{\(\mdlgblksquare\)}
+\newcommand*{\QEDhere}{\(\mdlgblksquare\)}
+\newcommand*{\QEDmath}{\tag*{\(\mdlgblksquare\)}}
+
+% TEXT-MODE ENVIRONMENTS
+%% `amsthm` environments
+%% Sources:
+% https://tex.stackexchange.com/a/8091
+% https://tex.stackexchange.com/a/17555
+% https://tex.stackexchange.com/a/31379
+% https://tex.stackexchange.com/a/85081
+% https://tex.stackexchange.com/a/391446
+% https://tex.stackexchange.com/a/444749
+% https://tex.stackexchange.com/a/597908
+% https://tex.stackexchange.com/a/752203
+\newcommand*{\thmbullet}{\raisebox{-0.05ex}{\rtextbullet}}
+\definelength{\thmsep}{0.5\baselineskip}
+\newtheoremstyle{dotlessplain}
+{\thmsep}                                             % ABOVESPACE
+{\thmsep}                                             % BELOWSPACE
+{\itshape}                                            % BODYFONT
+{0pt}                                                 % INDENT (empty value
+%                                                       is the same as 0pt)
+{\bfseries\makebox[0pt][r]{\thmbullet\hspace{0.3em}}} % HEADFONT
+{}                                                    % HEADPUNCT
+{\newline}                                            % HEADSPACE
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}          % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{dotlessdefinition}
+{\thmsep}                                             % ABOVESPACE
+{\thmsep}                                             % BELOWSPACE
+{\normalfont}                                         % BODYFONT
+{0pt}                                                 % INDENT (empty value
+%                                                       is the same as 0pt)
+{\bfseries\makebox[0pt][r]{\thmbullet\hspace{0.3em}}} % HEADFONT
+{}                                                    % HEADPUNCT
+{\newline}                                            % HEADSPACE
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}          % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{dotlessremark}
+{0.5\thmsep}                                          % ABOVESPACE
+{0.5\thmsep}                                          % BELOWSPACE
+{\normalfont}                                         % BODYFONT
+{0pt}                                                 % INDENT (empty value
+%                                                       is the same as 0pt)
+{\itshape}                                            % HEADFONT
+{}                                                    % HEADPUNCT
+{\newline}                                            % HEADSPACE
+{}                                                    % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{custom}
+{10pt}                                                % ABOVESPACE
+{}                                                    % BELOWSPACE
+{\normalfont}                                         % BODYFONT
+{0pt}                                                 % INDENT (empty value
+%                                                       is the same as 0pt)
+{\bfseries\makebox[0pt][r]{\thmbullet\hspace{0.3em}}} % HEADFONT
+{}                                                    % HEADPUNCT
+{\newline}                                            % HEADSPACE
+{\thmnote{#3 }\thmname{#1}}                           % CUSTOM-HEAD-SPEC
+
+\AtBeginDocument{%
+  \NewDocumentCommand{\newcustomtheorem}{m m}{%
+    \newtheorem{custom#1inner}{#2}
+    \crefformat{custom#1inner}{##2#2~##1##3}
+    \NewDocumentEnvironment{custom#1}{m}{%
+      \IfBlankTF{##1}{%
+        \expandafter\renewcommand\csname thecustom#1inner\endcsname{\unskip}
+      }{%
+        \expandafter\renewcommand\csname thecustom#1inner\endcsname{##1}
+      }%
+      \csname custom#1inner\endcsname
+    }{%
+      \csname endcustom#1inner\endcsname
+    }
+  }
+}
+
+%% Theorem style with italic body font
+\theoremstyle{dotlessplain}
+\newcommand*{\assumptionname}{Assumption}
+\newcommand*{\axiomname}{Axiom}
+\newcommand*{\corollaryname}{Corollary}
+\newcommand*{\lemmaname}{Lemma}
+\newcommand*{\propositionname}{Proposition}
+\newcommand*{\theoremname}{Theorem}
+
+\newtheorem{axiom}{\axiomname}[chapter]
+\newtheorem{assumption}{\assumptionname}[axiom]
+\newtheorem{corollary}[subsection]{\corollaryname}
+\newtheorem{lemma}[subsection]{\lemmaname}
+\newtheorem{proposition}[subsection]{\propositionname}
+\newtheorem{theorem}[subsection]{\theoremname}
+
+\AtBeginDocument{%
+  \theoremstyle{dotlessplain}
+  \newcustomtheorem{assumption}{\assumptionname}
+  \newcustomtheorem{axiom}{\axiomname}
+  \newcustomtheorem{corollary}{\corollaryname}
+  \newcustomtheorem{lemma}{\lemmaname}
+  \newcustomtheorem{proposition}{\propositionname}
+  \newcustomtheorem{theorem}{\theoremname}
+}
+
+%% Theorem style with roman body font
+\theoremstyle{dotlessdefinition}
+\newcommand*{\definitionname}{Definition}
+\newcommand*{\examplename}{Example}
+\newcommand*{\exercisename}{Exercise}
+\newcommand*{\remarkname}{Remark}
+
+\newtheorem{definition}[subsection]{\definitionname}
+\newtheorem{example}[subsection]{\examplename}
+\newtheorem{exercise}[subsection]{\exercisename}
+\newtheorem{remark}[subsection]{\remarkname}
+
+\AtBeginDocument{%
+  \theoremstyle{dotlessdefinition}
+  \newcustomtheorem{definition}{Definition}
+  \newcustomtheorem{example}{Example}
+  \newcustomtheorem{exercise}{Exercise}
+  \newcustomtheorem{remark}{Remark}
+}
+
+%% Theorem style with roman body font and no extra space
+\theoremstyle{dotlessremark}
+\newcommand*{\notename}{Note}
+
+\newtheorem*{note}{\notename}
+
+%% Proof environments
+%%% Proof environment redefinition
+\NewEnvironmentCopy{oldproof}{proof}
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\bfseries#1\nopunct]\( \)\par\nobreak\ignorespaces%
+}{\endoldproof}
+
+%%% Headless proof environment
+%%% Source: https://tex.stackexchange.com/a/263475
+\newenvironment{headlessproof}{\par
+  \pushQED{\qed}%
+  \normalfont\topsep0\p@\@plus6\p@\relax
+  \trivlist
+\item[]\ignorespaces
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+
+%% Set default theorem style
+\AtBeginDocument{\theoremstyle{dotlessplain}}
+
+% MATH-MODE ENVIRONMENTS
+%% Custom `align` environment without vertical spacing
+%% Source: https://tex.stackexchange.com/a/183047
+\newenvironment{closealign}{%
+  \par\centering\(\displaystyle%
+  \begin{aligned}}{%
+  \end{aligned}\)\par
+}
+
+% MATH-MODE MACROS
+%% General
+%%% Parenthesis paired-delimiters
+\DeclareSpacedPairedDelimiter{\parens}{(}{)}
+
+%%% Square-bracket paired-delimiters
+\DeclareSpacedPairedDelimiter{\brackets}{[}{]}
+
+%%% Brace paired-delimiters
+\DeclareSpacedPairedDelimiter{\braces}{\lbrace}{\rbrace}
+
+%%% Angle-bracket paired-delimiters
+\DeclareSpacedPairedDelimiter{\angbrackets}{\langle}{\rangle}
+
+%%% Vertical-bar paired-delimiters
+\DeclareSpacedPairedDelimiter{\vbars}{\lvert}{\rvert}
+
+%%% Double-vertical-bar paired-delimiters
+\DeclareSpacedPairedDelimiter{\vvbars}{\lVert}{\rVert}
+
+%%% Floor paired-delimiters
+\DeclareSpacedPairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+%%% Ceiling paired-delimiters
+\DeclareSpacedPairedDelimiter{\ceil}{\lceil}{\rceil}
+
+%% Mathematical logic
+%%% Connectives
+%%%% Material conditional (material implication)
+\newcommand*{\materiallyimplies}{\to}
+
+%%%% Negation
+\newcommand*{\longnegationof}[1]{\overline{#1}}
+\newcommand*{\negationof}[1]{\bar{#1}}
+
+%%% Quantifiers
+%%%% Existential quantifier
+\newcommand*{\thereexists}{\exists}
+\newcommand*{\thereissome}{\exists}
+
+%%%% Universal quantifier
+\newcommand*{\forevery}{\forall}
+
+%% Set theory
+%%% Set-membership
+\newcommand*{\arein}{\isin}
+\newcommand*{\arenotin}{\isnotin}
+\newcommand*{\beingin}{\isin}
+\newcommand*{\notbeingin}{\isnotin}
+\newcommand*{\isin}{\in}
+\newcommand*{\isnotin}{\notin}
+\newcommand*{\willbein}{\isin}
+\newcommand*{\willnotbein}{\isnotin}
+
+%%% Set-theoretic binary relations
+%%%% Set-inclusion (subset relation)
+\newcommand*{\isapropersubsetof}{\subset}
+\newcommand*{\isasubsetof}{\subseteq}
+
+%%% Set-theoretic binary operations
+%%%% Intersection
+\newcommand*{\intersect}{\cap}
+\newcommand*{\intersection}{\cap}
+
+%%%% Union
+\newcommand*{\union}{\cup}
+
+%%% Set-cardinality macro
+\DeclarePairedDelimiterX{\cardaux}[1]{\lvert}{\rvert}{%
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
+\NewDocumentCommand{\card}{s o D<>{} m}{%
+  \IfBooleanTF{#1}{\cardaux*{#3#4#3}}{%
+    \IfNoValueTF{#2}{%
+    \cardaux{#3#4#3}}{%
+      \cardaux[#2]{#3#4#3}
+    }
+  }
+}
+
+%%% Set-builder notation separator
+\newcommand*{\forwhich}{\mid}
+\newcommand*{\suchthat}{\mid}
+
+%%% Set macro
+%%% Source:
+%%% https://www.latex-project.org/publications/2020-egreg-TUB-tb127gregorio-math.pdf
+\ExplSyntaxOn
+\NewDocumentCommand{\setaux}{som}
+{
+  %%% limit the scope for \suchthat
+  \group_begin:
+  \cs_set_protected:Npn \suchthat
+  {
+    \tl_use:N \l__egreg_set_st_tl
+  }
+  \IfBooleanTF{#1}
+  {
+    \egreg_set_auto:n { #3 }
+  }
+  {
+    \egreg_set_fixed:nn { #2 } { #3 }
+  }
+  \group_end:
+}
+\tl_new:N \l__egreg_set_st_tl
+\cs_new_protected:Nn \__egreg_set_st:n
+{
+  \tl_set:Nn \l__egreg_set_st_tl { #1 }
+}
+\cs_new_protected:Nn \egreg_set_auto:n
+{
+  \__egreg_set_st:n
+  {
+    \nonscript\;
+    \middle\vert
+    \nonscript\;
+  }
+  \mleft\{ #1 \mright\}
+}
+\cs_new_protected:Nn \egreg_set_fixed:nn
+{
+  \tl_if_novalue:nTF { #1 }
+  {
+    \__egreg_set_st:n { \mid }
+    \lbrace #2 \rbrace
+  }
+  {
+    \__egreg_set_st:n
+    { \mathrel{#1\vert} }
+    \mathopen{#1\lbrace}
+    #2
+    \mathclose{#1\rbrace}
+  }
+}
+\ExplSyntaxOff
+\NewDocumentCommand{\set}{s o D<>{} m}{%
+  \IfBooleanTF{#1}{\setaux*{#3\splitatcommas{#4}#3}}{%
+    \IfNoValueTF{#2}{%
+    \setaux{#3\splitatcommas{#4}#3}}{%
+      \setaux[#2]{#3\splitatcommas{#4}#3}
+    }
+  }
+}
+
+%%% n-tuples
+\DeclareSpacedPairedDelimiter{\orderedpair}{(}{)}
+\DeclareSpacedPairedDelimiter{\tupleaux}{(}{)}
+\NewDocumentCommand{\tuple}{s o D<>{0mu} m}{%
+  \IfBooleanTF{#1}{\tupleaux*<#3>{\splitatcommas{#4}}}{%
+    \IfNoValueTF{#2}{%
+    \tupleaux<#3>{\splitatcommas{#4}}}{%
+      \tupleaux[#2]<#3>{\splitatcommas{#4}}
+    }
+  }
+}
+
+%%% Functions
+%%%% Domain and codomain
+\DeclareMathOperator{\codom}{codom}
+\DeclareMathOperator{\dom}{dom}
+
+%%%% Inverse function
+\newcommand*{\inverseof}[1]{#1^{-1}}
+
+%%%% Support
+\DeclareMathOperator*{\supp}{supp}
+
+%% Order theory
+%%% Lower and upper bounds
+\DeclareMathOperator*{\glb}{glb}
+\DeclareMathOperator*{\lb}{lb}
+\DeclareMathOperator*{\lub}{lub}
+\DeclareMathOperator*{\ub}{ub}
+
+%% Analysis
+%%% Absolute-value macro
+\DeclarePairedDelimiterX{\absaux}[1]{\lvert}{\rvert}{%
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
+\NewDocumentCommand{\abs}{s o D<>{} m}{%
+  \IfBooleanTF{#1}{\absaux*{#3#4#3}}{%
+    \IfNoValueTF{#2}{%
+    \absaux{#3#4#3}}{%
+      \absaux[#2]{#3#4#3}
+    }
+  }
+}
+
+%%% P-norm macros
+\DeclarePairedDelimiterXPP{\pnormaux}[3]{}{\lVert}{\rVert}{_#1}{%
+  #3\ifblank{#2}{\:\cdot\:}{#2}#3
+}
+\NewDocumentCommand{\pnorm}{s o D<>{} m m}{%
+  \IfBooleanTF{#1}{\pnormaux*{#4}{#5}{#3}}{%
+    \IfNoValueTF{#2}{%
+    \pnormaux{#4}{#5}{#3}}{%
+      \pnormaux[#2]{#4}{#5}{#3}
+    }
+  }
+}
+\NewDocumentCommand{\taxicabnorm}{s o D<>{} m}{%
+  \IfBooleanTF{#1}{\pnormaux*{1}{#4}{#3}}{%
+    \IfNoValueTF{#2}{%
+    \pnormaux{1}{#4}{#3}}{%
+      \pnormaux[#2]{1}{#4}{#3}
+    }
+  }
+}
+\NewDocumentCommand{\euclideannorm}{s o D<>{} m}{%
+  \IfBooleanTF{#1}{\pnormaux*{2}{#4}{#3}}{%
+    \IfNoValueTF{#2}{%
+    \pnormaux{2}{#4}{#3}}{%
+      \pnormaux[#2]{2}{#4}{#3}
+    }
+  }
+}
+\NewDocumentCommand{\supnorm}{s o D<>{} m}{%
+  \IfBooleanTF{#1}{\pnormaux*{\infty}{#4}{#3}}{%
+    \IfNoValueTF{#2}{%
+    \pnormaux{\infty}{#4}{#3}}{%
+      \pnormaux[#2]{\infty}{#4}{#3}
+    }
+  }
+}
+
+%% Algebra
+%%% Number-set notation
+\newcommand*{\numberset}[1]{\symbf{#1}}
+
+%%%% Natural numbers
+\newcommand*{\naturalnumbers}{\numberset{N}}
+\newcommand*{\naturalnumberswithoutzero}{\numberset{N}_0}
+\newcommand*{\naturalnumberswithzero}{\numberset{N}_1}
+\newcommand*{\naturals}{\numberset{N}}
+\newcommand*{\naturalswithoutzero}{\numberset{N}_1}
+\newcommand*{\naturalswithzero}{\numberset{N}_0}
+
+%%%% Integers
+\newcommand*{\integers}{\numberset{Z}}
+\newcommand*{\integersgreaterthanone}{\numberset{Z}_{>1}}
+\newcommand*{\negativeintegers}{\numberset{Z}_{<0}}
+\newcommand*{\nonnegativeintegers}{\numberset{Z}_{\geq0}}
+\newcommand*{\nonpositiveintegers}{\numberset{Z}_{\leq0}}
+\newcommand*{\positiveintegers}{\numberset{Z}_{>0}}
+\newcommand*{\primenumbers}{\numberset{P}}
+\newcommand*{\primes}{\numberset{P}}
+
+%%%% Rational numbers
+\newcommand*{\rationalnumbers}{\numberset{N}}
+\newcommand*{\rationals}{\numberset{N}}
+
+%%%% Real numbers
+\newcommand*{\nonzeroreals}{\numberset{R}^*}
+\newcommand*{\irrationalnumbers}{\numberset{R}\setminus\numberset{N}}
+\newcommand*{\irrationals}{\numberset{R}\setminus\numberset{N}}
+\newcommand*{\realnumbers}{\numberset{R}}
+\newcommand*{\reals}{\numberset{R}}
+\newcommand*{\realsgreaterthanone}{\numberset{R}_{>1}}
+
+%%%% Complex numbers
+\newcommand*{\complexnumbers}{\numberset{N}}
+
+%%% Vector notation
+%%% Source:
+%%% https://github.com/latex3/unicode-math/issues/463#issuecomment-387799849
+\AtBeginDocument{\renewcommand*{\vec}[1]{\symbf{#1}}}
+
+\DeclareSpacedPairedDelimiter{\coordinatevectoraux}{(}{)}
+\NewDocumentCommand{\coordinatevector}{s o D<>{0mu} m}{%
+  \IfBooleanTF{#1}{\coordinatevectoraux*<#3>{\splitatcommas{#4}}}{%
+    \IfNoValueTF{#2}{%
+    \coordinatevectoraux<#3>{\splitatcommas{#4}}}{%
+      \coordinatevectoraux[#2]<#3>{\splitatcommas{#4}}
+    }
+  }
+}
+
+\newcommand*{\ihat}{\vec{i}}
+\newcommand*{\jhat}{\vec{j}}
+\newcommand*{\khat}{\vec{k}}
+
+%%% Norm macro
+\DeclarePairedDelimiterX{\normaux}[1]{\lVert}{\rVert}{%
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
+\NewDocumentCommand{\norm}{s o D<>{} m}{%
+  \IfBooleanTF{#1}{\normaux*{#3#4#3}}{%
+    \IfNoValueTF{#2}{%
+    \normaux{#3#4#3}}{%
+      \normaux[#2]{#3#4#3}
+    }
+  }
+}
+
+%%% Inner-product macro
+\DeclarePairedDelimiterX{\innerprodaux}[2]{\langle}{\rangle}{%
+  \ifblank{#1}{\cdot\,}{#1},\ifblank{#2}{\cdot}{#2}
+}
+\NewDocumentCommand{\innerprod}{s o D<>{} m m}{%
+  \IfBooleanTF{#1}{\innerprodaux*{#3#4}{#5#3}}{%
+    \IfNoValueTF{#2}{%
+    \innerprodaux{#3#4}{#5#3}}{%
+      \innerprodaux[#2]{#3#4}{#5#3}
+    }
+  }
+
+}
+
+%% Category theory
+%%% Morphisms
+\NewCommandCopy{\isom}{\cong}
+
+%% Number theory
+%%% Divisibility
+%%%% Divisors
+\newcommand*{\divides}{\mid}
+\newcommand*{\doesnotdivide}{\nmid}
+\newcommand*{\willdivide}{\divides}
+\newcommand*{\willnotdivide}{\doesnotdivide}
+
+%%%% Integer division
+%%%% Source: https://tex.stackexchange.com/a/81945
+\newcommand*{\bdiv}{%
+  \nonscript\mskip-\medmuskip\mkern5mu%
+  \mathbin{\operator@font div}\penalty900\mkern5mu%
+  \nonscript\mskip-\medmuskip
+}
+
+%%%% Least common multiple
+\DeclareMathOperator{\lcm}{lcm}
+
+%%% Modular arithmetic
+\newcommand*{\ceq}{\equiv}
+\NewDocumentCommand{\congmod}{m m m}{#1 \ceq #2 \pmod #3}
+
+\endinput

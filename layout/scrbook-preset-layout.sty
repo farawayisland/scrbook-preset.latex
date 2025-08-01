@@ -1,0 +1,363 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/layout/scrbook-preset-layout.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-layout}[2025/06/01 The layout package of%
+the `scrbook-preset` bundle]
+
+\RequirePackage{datetime2} % Formats for dates, times and time zones
+\RequirePackage{enumitem} % Control layout of itemize, enumerate, description
+\RequirePackage{scrhack} % Compatibility package to emulate
+% the former KOMA-Script package `scrhack`
+\RequirePackage{scrlayer-scrpage} % Define and manage page styles
+\RequirePackage{scrbook-preset-layout-languages}
+\if@twoside%
+\RequirePackage{scrbook-preset-layout-twoside}
+\else%
+\RequirePackage{scrbook-preset-layout-oneside}
+\fi%
+\RequirePackage{scrbook-preset-library} % The library package of
+\RequirePackage{tabularray} % Typeset tabulars and arrays with LaTeX3
+
+% TITLE PAGE
+%% Raised hyphen in date format
+%% Source: https://tex.stackexchange.com/a/168603
+\let\oldhyphen-
+\def\newhyphen{\raisebox{0.2ex}{\oldhyphen}}
+\catcode`-\active
+\def\newhyphenON{\catcode`-\active\def-{\newhyphen}}
+\def\newhyphenOFF{\catcode`-=12\let-\oldhyphen}
+\catcode`-=12
+
+\newhyphenON
+\DTMsetup{datesep=-}
+\newhyphenOFF
+
+%% Publishers position
+\newcommand*{\publishersposition}{notflushedbottom}
+\newcommand*{\flushedbottompublishers}{\renewcommand*{\publishersposition}{flushedbottom}}
+
+% TABLE OF CONTENTS
+%% Add "Part"/"Chapter" to numbered part/chapter entries in ToC
+%% Source:
+%% https://tex.stackexchange.com/a/504835/
+\let\oldaddparttocentry\addparttocentry
+\renewcommand*{\addparttocentry}[2]{%
+  \IfEmptyTF{#1}{%
+  \oldaddparttocentry{#1}{#2}}{%
+    \oldaddparttocentry{}{\partname{} #1. #2}
+  }
+}
+\let\oldaddchaptertocentry\addchaptertocentry
+\renewcommand*{\addchaptertocentry}[2]{%
+  \IfEmptyTF{#1}{%
+  \oldaddchaptertocentry{#1}{#2}}{%
+    \oldaddchaptertocentry{}{\chapapp{} #1. #2}
+  }
+}
+
+%% Indentation of ToC entries
+\RedeclareSectionCommand[tocindent = 0em]{section}
+\RedeclareSectionCommand[tocindent = 2.3em]{subsection}
+
+%% Replace \autodot with "." for ToC entries and headings of chapters
+%% Source: https://tex.stackexchange.com/a/510236
+\newcommand*{\entrynumberwithdot}[1]{\def\autodot{.}#1}
+\DeclareTOCStyleEntry[
+  entrynumberformat = \entrynumberwithdot
+]{chapter}{chapter}
+\xpatchcmd{\chapterformat}{\autodot}{.}{}{\PatchFailed}
+
+%% Dot leaders in ToC
+\renewcommand*{\@dotsep}{3} % default = 4.5
+
+%% Remove part-entry page-number in ToC
+\newcommand*{\emptypagenumberbox}[1]{}
+\DeclareTOCStyleEntry[
+  pagenumberbox = \emptypagenumberbox
+]{part}{part}
+\RedeclareSectionCommand[tocpagenumberbox = \emptypagenumberbox]{part}
+
+%% Page-number box in ToC
+\newcommand*{\pagenumberbox}[1]{\makebox[1.5em][r]{#1}}
+\DeclareTOCStyleEntry[
+  pagenumberbox = \pagenumberbox
+]{section}{section}
+\DeclareTOCStyleEntry[
+  pagenumberbox = \pagenumberbox
+]{subsection}{subsection}
+
+%% Font settings for ToC entries
+\DeclareTOCStyleEntry[%
+  entryformat = \large\bfseries,
+  pagenumberformat = \large\bfseries
+]{part}{part}
+\DeclareTOCStyleEntry[%
+  entryformat = \small\bfseries,
+  pagenumberformat = \small\bfseries
+]{chapter}{chapter}
+\DeclareTOCStyleEntry[%
+  entryformat = \small,
+  pagenumberformat = \small
+]{section}{section}
+\DeclareTOCStyleEntry[%
+  entryformat = \small,
+  pagenumberformat = \small
+]{default}{subsection}
+
+%% Spacing of ToC entries
+\DeclareTOCStyleEntry[beforeskip = 0.25cm]{part}{part}
+\DeclareTOCStyleEntry[beforeskip = 0.25cm]{chapter}{chapter}
+\DeclareTOCStyleEntry[beforeskip = 0.25cm]{section}{section}
+\DeclareTOCStyleEntry[beforeskip = 0.25cm]{default}{subsection}
+
+% PAGE STYLES, HEADERS, FOOTERS, AND FOOTNOTES
+%% Page styles
+\pagestyle{scrheadings}
+\renewcommand*{\partpagestyle}{empty}
+\renewcommand*{\chapterpagestyle}{plain.scrheadings}
+
+%% Headers
+\renewcommand*{\chaptermarkformat}{\chapapp~\thechapter.\enskip}
+\automark[chapter]{chapter}
+\automark*[section]{}
+\ihead{\headmark}
+\chead{}
+\ohead{\pagemark}
+
+%% Footers
+\addtokomafont{pagenumber}{\normalsize\rmfamily}
+\ifoot*{}
+\cfoot*{}
+% \ofoot*{\pagemark}
+
+%% Footnotes
+\deffootnote{0.5em}{0em}{\makebox[0.5em][l]{\textsuperscript{\thefootnotemark}}}
+
+% SECTION HEADINGS
+%% Depth and numbering of section headings
+\setcounter{secnumdepth}{\subparagraphnumdepth}
+\renewcommand*{\thesubsubsection}{\alph{subsubsection}.}
+\renewcommand*{\theparagraph}{\rtextbullet}
+\renewcommand*{\thesubparagraph}{\textasteriskcentered{}}
+
+%% Font settings for section headings
+\addtokomafont{sectioning}{\rmfamily}
+\setkomafont{part}{\LARGE}
+\setkomafont{chapter}{\Large}
+\setkomafont{section}{\large}
+\setkomafont{subsection}{\normalsize}
+\setkomafont{subsubsection}{\normalsize}
+\setkomafont{paragraph}{\normalsize}
+\setkomafont{subparagraph}{\normalsize}
+
+%% Spacing of section headings
+\renewcommand*{\chapterheadstartvskip}{\vspace*{0cm}}
+\renewcommand*{\chapterheadendvskip}{\vspace*{0.25\baselineskip}}
+\RedeclareSectionCommand[%
+  beforeskip = -0.25\baselineskip,
+  afterskip = 0.25\baselineskip
+]{section}
+\RedeclareSectionCommand[%
+  beforeskip = -0.25\baselineskip,
+  afterskip = 0.25\baselineskip
+]{subsection}
+\RedeclareSectionCommand[%
+  beforeskip = -0.25\baselineskip,
+  afterskip = 0.25\baselineskip
+]{subsubsection}
+\RedeclareSectionCommand[%
+  beforeskip = -0.25\baselineskip,
+  afterskip = 0.25\baselineskip
+]{paragraph}
+\RedeclareSectionCommand[%
+  beforeskip = -0.25\baselineskip,
+  afterskip = 0.25\baselineskip
+]{subparagraph}
+
+%% Remove indentation at the start of \subparagraph
+\newcommand*{\oldsubparagraph}{\subparagraph}
+\renewcommand*{\subparagraph}{%
+  \@startsection{subparagraph}{5}{\z@ }{3.25ex \@plus 1ex
+  \@minus 0.2ex}{-1em}{\normalfont\normalsize\bfseries}
+}%
+
+% SECTION CONTENTS
+%% Paragraph indentation
+\setlength{\parindent}{1.5em}
+
+% LAYOUTS OF LIST ENVIRONMENTS
+%% `enumitem` list environments
+\setlist{%
+  nosep,
+  align = left,
+  labelsep = 3.5pt,
+  itemindent = 0pt,
+  font = \normalsize\normalfont,
+  before = \normalsize\normalfont
+}
+
+%% `enumerate`
+\setlist[enumerate]{%
+  leftmargin = \widthof{00.} + 3.5pt,
+  label = \arabic*.,
+  labelwidth = \widthof{00.}
+}
+\setlist[enumerate, 1]{align = right}
+
+%% `EnumerateQuestions` (custom)
+\newlist{EnumerateQuestions}{enumerate}{2}
+\setlist[EnumerateQuestions]{%
+  leftmargin = \widthof{00.} + 3.5pt,
+  label = \arabic*.,
+  labelwidth = \widthof{00.}
+}
+\setlist[EnumerateQuestions, 1]{%
+  leftmargin = \widthof{\textbf{00.}} + 3.5pt,
+  align = right,
+  labelwidth = \widthof{\textbf{00.}},
+  font = \normalsize\bfseries
+}
+
+%% `EnumerateSubquestions` (custom)
+\newlist{EnumerateSubquestions}{enumerate}{2}
+\setlist[EnumerateSubquestions]{%
+  leftmargin = \widthof{(m)} + 3.5pt,
+  label = (\alph*),
+  labelwidth = \widthof{(m)}
+}
+\setlist[EnumerateSubquestions, 1]{%
+  leftmargin = \widthof{\textbf{(m)}} + 3.5pt,
+  labelwidth = \widthof{\textbf{(m)}},
+  font = \normalsize\bfseries
+}
+
+%% `EnumerateStatements` (custom)
+\newlist{EnumerateStatements}{enumerate}{1}
+\setlist[EnumerateStatements]{%
+  leftmargin = \widthof{0.} + 3.5pt,
+  label = \arabic*.,
+  labelwidth = \widthof{0.}
+}
+
+%% `EnumerateParentheticalStatements` (custom)
+\newlist{EnumerateParentheticalStatements}{enumerate}{1}
+\setlist[EnumerateParentheticalStatements]{%
+  leftmargin = \widthof{(0)} + 3.5pt,
+  label = (\arabic*),
+  labelwidth = \widthof{(0)}
+}
+
+%% `EnumerateAnswers` (custom)
+\newlist{EnumerateAnswers}{enumerate}{1}
+\setlist[EnumerateAnswers]{%
+  leftmargin = \widthof{D.} + 3.5pt,
+  label = \Alph*.,
+  labelwidth = \widthof{D.}
+}
+
+%% `EnumerateParentheticalAnswers` (custom)
+\newlist{EnumerateParentheticalAnswers}{enumerate}{1}
+\setlist[EnumerateParentheticalAnswers]{%
+  leftmargin = \widthof{(D)} + 3.5pt,
+  label = (\Alph*),
+  labelwidth = \widthof{(D)}
+}
+
+%% `EnumerateStatementAlignedAnswers` (custom)
+\newlist{EnumerateStatementAlignedAnswers}{enumerate}{1}
+\setlist[EnumerateStatementAlignedAnswers]{%
+  leftmargin = \widthof{0.} + 3.5pt,
+  label = \Alph*.,
+  labelwidth = \widthof{D.}
+}
+
+%% `EnumerateStatementAlignedParentheticalAnswers` (custom)
+\newlist{EnumerateStatementAlignedParentheticalAnswers}{enumerate}{1}
+\setlist[EnumerateStatementAlignedParentheticalAnswers]{%
+  leftmargin = \widthof{0.} + 3.5pt,
+  label = (\Alph*),
+  labelwidth = \widthof{(D)}
+}
+
+%% `EnumerateParentheticalStatementAlignedAnswers` (custom)
+\newlist{EnumerateParentheticalStatementAlignedAnswers}{enumerate}{1}
+\setlist[EnumerateParentheticalStatementAlignedAnswers]{%
+  leftmargin = \widthof{(0)} + 3.5pt,
+  label = \Alph*.,
+  labelwidth = \widthof{D.}
+}
+
+%% `EnumerateParentheticalStatementAlignedParentheticalAnswers` (custom)
+\newlist{EnumerateParentheticalStatementAlignedParentheticalAnswers}{enumerate}{1}
+\setlist[EnumerateParentheticalStatementAlignedParentheticalAnswers]{%
+  leftmargin = \widthof{(0)} + 3.5pt,
+  label = (\Alph*),
+  labelwidth = \widthof{(D)}
+}
+
+%% `itemize`
+\setlist[itemize, 1]{%
+  leftmargin = \widthof{\rtextbullet} + \widthof{\ },
+  label = \raisebox{-0.05ex}{\rtextbullet},
+  labelwidth = \widthof{\rtextbullet},
+  labelsep = \widthof{\ }
+}
+\setlist[itemize, 2]{%
+  leftmargin = \widthof{\textsquarebullet} + \widthof{\ },
+  label = \raisebox{-0.05ex}{\textsquarebullet},
+  labelwidth = \widthof{\textsquarebullet},
+  labelsep = \widthof{\ }
+}
+
+%% `ItemizeSolutionParts` (custom)
+\newlist{ItemizeSolutionParts}{itemize}{1}
+\setlist[ItemizeSolutionParts]{%
+  leftmargin = \widthof{\textbf{\rtextbullet}} + \widthof{\ },
+  label = \raisebox{-0.05ex}{\rtextbullet},
+  labelwidth = \widthof{\textbf{\rtextbullet}},
+  labelsep = \widthof{\ },
+  font = \normalsize\bfseries
+}
+
+%% Custom `enumerate` environment which ensures that the text of each
+%% \item will be entirely contained on the same page
+%% Sources:
+%% https://tex.stackexchange.com/a/43005
+%% https://tex.stackexchange.com/q/56435
+%% https://tex.stackexchange.com/a/76495
+\newlength{\currentparskip}
+\newcommand{\MyItem}{%
+\item}
+\newtoggle{FirstItem}%
+\toggletrue{FirstItem}
+\toggletrue{FirstItem}%
+\newenvironment{MyEnumerate}[1][]{%
+  \renewcommand{\MyItem}{%
+    \iftoggle{FirstItem}{%
+      \global\togglefalse{FirstItem}
+      \setlength{\currentparskip}{\parskip}% save the value
+      %--------- start new minipage
+      \par\addvspace{\baselineskip}\noindent
+      \begin{minipage}{\textwidth}%
+        \setlength{\parskip}{\currentparskip}% restore the value
+        \begin{enumerate}[#1,series=MySeries]%
+          }{%
+        \end{enumerate}%
+      \end{minipage}%
+      %--------- end previous minipage and start new one
+      \par\addvspace{\baselineskip}\noindent
+      \begin{minipage}{\textwidth}%
+        \setlength{\parskip}{\currentparskip}% restore the value
+        \begin{enumerate}[#1,resume*=MySeries]%
+          }%
+        \item\mbox{}%
+        }%
+      }{%
+    \end{enumerate}%
+  \end{minipage}% --------- end last minipage
+  \global\toggletrue{FirstItem}%
+}%
+
+% LAYOUTS OF TABULAR ENVIRONMENTS
+%% Custom column types
+
+\endinput

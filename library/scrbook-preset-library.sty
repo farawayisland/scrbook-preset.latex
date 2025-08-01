@@ -1,0 +1,242 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/library/scrbook-preset-library.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-library}[2025/06/01 The library package of%
+the `scrbook-preset` bundle]
+
+\RequirePackage{comment} % Selectively include/exclude portions of text
+\RequirePackage{graphicx} % Enhanced support for graphics
+\RequirePackage{mathtools} % Mathematical tools to use with `amsmath`
+\RequirePackage{scalerel} % Constrained scaling and stretching of objects
+\RequirePackage{scaletextbullet} % Resize the \textbullet without changing its
+%% vertical center
+\RequirePackage{scrbook-preset-library-lua} % The lua module of the library
+% package of the `scrbook-preset` bundle
+\RequirePackage{setspace} % Set space between lines
+\RequirePackage{tikz} % Create PostScript and PDF graphics in TeX
+\RequirePackage[svgnames]{xcolor} % Driver-independent
+% color extensions for LaTeX and pdfLaTeX
+
+% COLORS
+%% Blue
+\definecolor{CustomBlue}{HTML}{000075}
+
+% CONDITIONAL COMMANDS
+%% String comparison
+%% Sources:
+%% https://tex.stackexchange.com/a/33756
+%% https://tex.stackexchange.com/a/451094
+\ExplSyntaxOn
+\cs_set_eq:NN \IfEmptyTF \tl_if_blank:nTF
+\ExplSyntaxOff
+
+\ExplSyntaxOn
+\NewExpandableDocumentCommand{\IfStringsEqualTF}{mmmm}
+{
+  \str_if_eq:eeTF { #1 } { #2 } { #3 } { #4 }
+}
+\ExplSyntaxOff
+
+% DELIMITERS
+%% Modified version of \DeclarePairedDelimiter from `mathtools`
+%% with an optional, symmetrical, horizontal spacing argument
+%% Source: https://tex.stackexchange.com/a/7495988
+\ExplSyntaxOn
+\NewDocumentCommand{\DeclareSpacedPairedDelimiter}{mmm}
+{
+  \egreg_delimiter:NcNN {#1}{__egreg_\cs_to_str:N #1:w} #2 #3
+}
+
+\cs_new_protected:Nn \egreg_delimiter:NNNN
+{
+  \DeclarePairedDelimiter{#2}{#3}{#4}
+  \NewDocumentCommand{#1}{s o d<> m}
+  {
+    \IfBooleanTF{##1}
+    {
+      #2*{\egreg_spacedarg:nn {##3}{##4}}
+    }
+    {
+      \IfNoValueTF{#2}
+      {
+        #2{\egreg_spacedarg:nn {##3}{##4}}
+      }
+      {
+        #2[##2]{\egreg_spacedarg:nn {##3}{##4}}
+      }
+    }
+  }
+}
+\cs_generate_variant:Nn \egreg_delimiter:NNNN {Nc}
+\cs_new_protected:Nn \egreg_spacedarg:nn
+{
+  \tl_if_novalue:nF {#1}
+  {
+    \str_case:nnF {#1}
+    { {\,}{\,} {\:}{\:} {\;}{\;} }
+    { \mspace{#1} }
+  }
+  #2
+  \tl_if_novalue:nF {#1}
+  {
+    \str_case:nnF {#1}
+    { {\,}{\,} {\:}{\:} {\;}{\;} }
+    { \mspace{#1} }
+  }
+}
+\ExplSyntaxOff
+
+% ENVIRONMENTS
+%% `Solution` and `SpaceSavingSolution` environments
+%% Source: https://tex.stackexchange.com/a/434069
+\newif\ifDisplaySpaceSavingSolutions
+\generalcomment{SpaceSavingSolution}{%
+  \begingroup
+  \ifDisplaySpaceSavingSolutions\else%
+  % if \DisplaySolutionstrue is not called, then we remove the contents
+  \def\ProcessCutFile{}\fi%
+}{%
+  \ifDisplaySpaceSavingSolutions\else%
+  % and, now (also when it's not called), we make a box
+  % and then we \input the \CommentCutFile
+  \setbox1=\vbox{\input{\CommentCutFile}}%
+  \edef\boxheight{\strip@pt\ht1}
+  % Get the height from \ht1 and use \vskip to make appropriate space
+  \newcount\Scount
+  \Scount=0
+  \FPdiv\boxPartHeight{\boxheight}{10}
+  {\nullfont\loop\vskip 10pt\relax\advance\Scount by 1
+  \ifnum\Scount<\boxPartHeight\relax\repeat}
+  \fi
+  \endgroup%
+}
+\newcommand*{\DisplaySolutions}{false}
+\AtBeginDocument{\IfStringsEqualTF{\DisplaySolutions}{true}{%
+  \includecomment{Solution}\DisplaySpaceSavingSolutionstrue}{%
+  \excludecomment{Solution}}
+}
+
+%% `TerminalOutputTikZPicture` environment
+%% Source: https://tex.stackexchange.com/a/61898
+\NewDocumentEnvironment{TerminalOutputTikZPicture}{O{0.2cm} +b}{%
+  \tikzpicture%
+  \node [inner sep = 0pt] at (0,0) {
+    #2%
+  };
+  \draw [white, rounded corners = #1, line width = #1]
+  (current bounding box.north west) --
+  (current bounding box.north east) --
+  (current bounding box.south east) --
+  (current bounding box.south west) -- cycle
+  ;
+}{%
+  \endtikzpicture%
+}
+
+% LENGTHS
+%% Length-defining macro
+\newcommand*{\definelength}[2]{\newlength{#1}\setlength{#1}{#2}}
+
+% PACKAGE MANAGEMENT
+%% Package-disabling macros
+%% Source: https://tex.stackexchange.com/a/39418
+\newcommand{\disablepackage}[2]{%
+  \disable@package@load{#1}{#2}%
+}
+\newcommand{\reenablepackage}[1]{%
+  \reenable@package@load{#1}%
+}
+
+% RULES
+%% Custom \hrulefill macro
+%% Source: https://tex.stackexchange.com/a/309705
+\ExplSyntaxOn
+\NewDocumentCommand{\xhrulefill}{O{}}
+{
+  \group_begin:
+  \severin_xhrulefill:n { #1 }
+  \group_end:
+}
+
+\keys_define:nn { severin/xhrulefill }
+{
+  height .dim_set:N    = \l_severin_xhrule_height_dim,
+  thickness .dim_set:N = \l_severin_xhrule_thickness_dim,
+  fill .skip_set:N     = \l_severin_xhrule_fill_skip,
+  height .initial:n    = 0pt,
+  thickness .initial:n = 0.4pt,
+  fill .initial:n      = 0pt plus 1fill,
+}
+
+\cs_new_protected:Nn \severin_xhrulefill:n
+{
+  \keys_set:nn { severin/xhrulefill } { #1 }
+  \leavevmode
+  \leaders\hrule
+  height \dim_eval:n { \l_severin_xhrule_thickness_dim +
+  \l_severin_xhrule_height_dim }
+  depth  \dim_eval:n { -\l_severin_xhrule_height_dim }
+  \skip_horizontal:N \l_severin_xhrule_fill_skip
+  \kern 0pt
+}
+\ExplSyntaxOff
+
+%% Logical argument line inside list environments
+\newcommand*{\logicalargumentline}{%
+\item[]
+  \vspace{-0.3ex}%
+  \xhrulefill[height = 4pt, thickness = 0.8pt]%
+  \vspace{-0.3ex}%
+}
+
+% SUBSCRIPTS AND SUPERSCRIPTS
+%% \raisemath{<height>}{<symbol>}
+%% Source: https://tex.stackexchange.com/a/5192
+\newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}
+\newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}
+
+% SYMBOLS
+%% Circular symbols
+%%% Resizeable \bullet macro
+%%% Source: https://tex.stackexchange.com/a/389240
+\newcommand*{\rbullet}[1][0.5]{\mathbin{\ThisStyle{\vcenter{\hbox{%
+  \scalebox{#1}{$\SavedStyle\bullet$}}}}}%
+}
+
+%%% Resizeable \textbullet macro
+%%% Source: https://tex.stackexchange.com/a/730865
+\newcommand*{\rtextbullet}[1][0.7]{\scaletextbullet{#1}}
+
+%% Square symbols
+%%% Custom \squarebullet macro
+%%% Source: https://tex.stackexchange.com/a/487742
+\newlength\vcenterht
+\newlength\halfht
+\newcommand*{\squarebullet}{\mathbin{\ThisStyle{%
+      \setbox0=\hbox{$\SavedStyle\bullet$}%
+      \setbox2=\hbox{$\SavedStyle()$}%
+      \vcenterht=\dimexpr0.5\dimexpr\ht2-\dp2\relax\relax
+      \halfht=\dimexpr\ht0-\vcenterht\relax
+      \kern0.5\dimexpr\wd0-2\halfht\relax
+      \rule[\dimexpr\vcenterht-\halfht\relax]{2\halfht}{2\halfht}%
+      \kern0.5\dimexpr\wd0-2\halfht\relax
+  }}%
+}
+\newcommand*{\squarebulletoverlay}{\ThisStyle{\ooalign{$\SavedStyle\squarebullet$\cr%
+\textcolor{red}{$\SavedStyle\bullet$}}}}
+
+%%% Custom \textsquarebullet macro
+%%% Source: https://tex.stackexchange.com/a/300556
+\DeclareRobustCommand{\textsquarebullet}{%
+  \makebox[0.4125em]{\raisebox{0.45ex}{\vrule height 0.5775ex depth -0.0825ex%
+  width 0.495ex}}%
+}
+
+% TABULAR COMMANDS
+%% Multiple-line cells
+\newcommand{\minitab}[2][c]{%
+  \begin{tabular}{#1}
+    #2
+  \end{tabular}
+}
+
+\endinput

@@ -1,0 +1,33 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/core/scrbook-preset-core.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-core}[2025/06/01 The core package of%
+the `scrbook-preset` bundle]
+
+\RequirePackage[greek.polutoniko, indonesian, english]{babel}
+% Multilingual support for LaTeX, LuaLaTeX, XeLaTeX, and Plain TeX
+\RequirePackage{blindtext} % Producing 'blind' text for testing
+\RequirePackage{caption} % Customising captions in floating environments
+\RequirePackage{colortbl} % Add colour to LaTeX tables
+\RequirePackage{comment} % Selectively include/exclude portions of text
+\RequirePackage{enumitem} % Control layout of itemize, enumerate, description
+\RequirePackage{float} % Improved interface for floating objects
+\RequirePackage{fp} % Fixed point arithmetic
+\RequirePackage{graphicx} % Enhanced support for graphics
+\RequirePackage{kantlipsum} % Generate sentences in Kant's style
+\RequirePackage{lipsum} % Easy access to the Lorem Ipsum and other dummy texts
+% \let\CheckCommand\providecommand
+% See https://tex.stackexchange.com/a/511714 and
+% https://github.com/schlcht/microtype/issues/53
+\RequirePackage[babel, nopatch = eqnum]{microtype}
+% Subliminal refinements towards typographical perfection
+\RequirePackage{multirow} % Create tabular cells spanning multiple rows
+\RequirePackage{nicematrix}
+% Improve the typesetting of mathematical matrices with PGF
+\RequirePackage{setspace} % Set space between lines
+\RequirePackage{tcolorbox}
+% Coloured boxes, for LaTeX examples and theorems, etc.
+\RequirePackage[svgnames]{xcolor}
+% Driver-independent color extensions for LaTeX and pdfLaTeX
+\setdisplayskipstretch{1.0}
+
+\endinput
