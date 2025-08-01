@@ -1,0 +1,114 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/fonts/scrbook-preset-fonts-text.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-fonts-text}[2025/06/01 The text module of%
+the fonts package of the `scrbook-preset` bundle]
+
+% \RequirePackage[no-math]{fontspec} % Advanced font selection in
+% XeLaTeX and LuaLaTeX (loaded by `newpxtext`)
+\RequirePackage[largesc, no-math, otfmath, theoremfont, trueslanted]{newpxtext}
+% Alternative uses of the PX fonts, with improved metrics
+
+% SERIF FONTS
+%% TeX Gyre PagellaX (loaded by `newpxtext`)
+%% \setmainfont[% https://ctan.org/tex-archive/fonts/newpx/opentype
+%%   Scale = 1
+%% ]{TeX Gyre PagellaX}
+
+%% NewComputerModern Serif
+\newfontfamily{\NewCM}[%
+  % https://ctan.org/tex-archive/fonts/newcomputermodern/otf
+  Scale = 1,
+  Extension = .otf,
+  UprightFont = *-Book,
+  BoldFont = *-Bold,
+  ItalicFont = *-BookItalic,
+  BoldItalicFont = *-BoldItalic
+]{NewCM10}
+
+% SANS-SERIF FONTS
+%% URW Classico
+\setsansfont[% https://www.ctan.org/tex-archive/fonts/urw/classico/opentype
+  % (No Commercial Use license)
+  Scale = MatchUppercase,
+  Extension = .otf,
+  UprightFont = *-Regular,
+  BoldFont = *-Bold,
+  ItalicFont = *-Italic,
+  BoldItalicFont = *-BoldItalic
+]{URWClassico}
+
+%% NewComputerModern Sans
+\newfontfamily{\NewCMSans}[%
+  % https://ctan.org/tex-archive/fonts/newcomputermodern/otf
+  Scale = 0.9,
+  Extension = .otf,
+  UprightFont = *-Book,
+  BoldFont = *-Bold,
+  ItalicFont = *-BookOblique,
+  BoldItalicFont = *-BoldOblique
+]{NewCMSans10}
+
+%% Linux Biolinum
+\newfontfamily{\linuxbiolinum}[%
+  % https://www.ctan.org/tex-archive/fonts/libertine/opentype
+  Scale = MatchLowercase,
+  Extension = .otf,
+  UprightFont = *_R,
+  ItalicFont = *_RI,
+  BoldFont = *_RB,
+  BoldItalicFont = *_RBO
+]{LinBiolinum}
+
+%% TeX Gyre Heros
+\newfontfamily{\texgyreheros}[%
+  % https://www.ctan.org/tex-archive/fonts/tex-gyre/opentype
+  Scale = MatchUppercase,
+  Extension = .otf,
+  UprightFont = *-regular,
+  BoldFont = *-bold,
+  ItalicFont = *-italic,
+  BoldItalicFont = *-bolditalic
+]{texgyreheros}
+
+% MONOSPACED FONTS
+%% Inconsolatazi4
+\setmonofont[% https://ctan.org/tex-archive/fonts/inconsolata/opentype
+  Scale = MatchLowercase,
+  StylisticSet = 3,
+  Extension = .otf,
+  UprightFont = *-Regular,
+  BoldFont = *-Bold
+]{Inconsolatazi4}
+
+%% JetBrainsMono Nerd Font Mono
+\newfontfamily{\JetBrainsMonoNerdFontMono}[%
+  % https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+  Scale = MatchLowercase,
+  Extension = .ttf,
+  UprightFont = *-Medium,
+  BoldFont = *-Bold,
+  ItalicFont = *-MediumItalic,
+  BoldItalicFont = *-BoldItalic
+]{JetBrainsMonoNerdFontMono}
+
+%% NewComputerModern Mono
+\newfontfamily{\NewCMMono}[%
+  % https://ctan.org/tex-archive/fonts/newcomputermodern/otf
+  Scale = 0.8,
+  Extension = .otf,
+  UprightFont = *-Book,
+  BoldFont = *-Bold,
+  ItalicFont = *-BookItalic,
+  BoldItalicFont = *-BoldOblique
+]{NewCMMono10}
+
+% TeX-RELATED LOGOS
+%% TeX
+\newcommand*{\TeXrm}{{\NewCM\upshape\TeX}}
+\newcommand*{\TeXsf}{{\NewCMSans\upshape\TeX}}
+
+%% LaTeX
+\newcommand*{\LaTeXrm}{{\NewCM\upshape\LaTeX}}
+\newcommand*{\LaTeXsf}{{\NewCMSans\upshape\LaTeX}}
+
+\endinput

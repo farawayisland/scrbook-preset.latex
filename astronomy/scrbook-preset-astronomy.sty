@@ -1,0 +1,96 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/astronomy/scrbook-preset-astronomy.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-astronomy}[2025/06/01 The astronomy package%
+of the `scrbook-preset` bundle]
+
+\RequirePackage{scrbook-preset-library} % The library package of
+% the `scrbook-preset` bundle
+\RequirePackage{siunitx} % A comprehensive (SI) units package
+
+% ASTRONOMICAL SYMBOLS
+%% Solar system
+\newcommand*{\Earth}{\oplus}
+\newcommand*{\Moon}{\mkern-0.18mu\raisemath{0.7875pt}{\leftmoon}}
+\newcommand*{\Sun}{\odot}
+
+% UNITS AND CONSTANTS
+%% Units in astronomy
+%% Sources:
+%% https://tex.stackexchange.com/a/695361
+\newcommand*{\unitslanguage}{english}
+\DeclareSIUnit{\east}{\text{\ E}}
+\DeclareSIUnit{\hour}{\textsuperscript{h}}
+\DeclareSIUnit{\minute}{\textsuperscript{m}}
+\DeclareSIUnit{\north}{\text{\ N}}
+\newcommand*{\rightascension}[2][]{%
+  \ang[%
+    angle-symbol-degree = \!\textsuperscript{h},
+    angle-symbol-minute = \!\textsuperscript{m},
+    angle-symbol-second = \!\textsuperscript{s},
+  #1]{#2}%
+}
+\DeclareSIUnit{\south}{\text{\ S}}
+\DeclareSIUnit{\west}{\text{\ W}}
+\DeclareSIUnit{\year}{\text{year}}
+\AtBeginDocument{%
+  \IfStringsEqualTF{\unitslanguage}{indonesian}{%
+    \DeclareSIUnit{\day}{\text{hari}}
+    \DeclareSIUnit{\east}{\text{\ BT}}
+    \DeclareSIUnit{\hour}{\textsuperscript{j}}
+    % \DeclareSIUnit{\minute}{\textsuperscript{m}}
+    \DeclareSIUnit{\north}{\text{\ LU}}
+    \renewcommand*{\rightascension}[2][]{%
+      \ang[%
+        angle-symbol-degree = \!\textsuperscript{j},
+        angle-symbol-minute = \!\textsuperscript{m},
+        angle-symbol-second = \!\textsuperscript{d},
+      #1]{#2}%
+    }
+    \DeclareSIUnit{\south}{\text{\ LS}}
+    \DeclareSIUnit{\west}{\text{\ BB}}
+    \DeclareSIUnit{\year}{\text{tahun}}
+  }{}
+}
+
+\DeclareSIUnit[unit-font-command =
+\mathit]{\arcsecondunit}{\text{as}}
+\newcommand*{\declination}[2][]{\ang[retain-explicit-plus, #1]{#2}}
+\DeclareSIUnit[unit-font-command = \mathit]{\earthmass}{\ensuremath{M_\Earth}}
+\DeclareSIUnit[unit-font-command = \mathit]{\earthradius}{\ensuremath{R_\Earth}}
+\DeclareSIUnit[unit-font-command = \mathit]{\hubbleconstant}{\ensuremath{H_0}}
+\DeclareSIUnit{\jansky}{\text{Jy}}
+\DeclareSIUnit{\lightyear}{\text{ly}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\lunarmass}{\ensuremath{M_{\mkern-0.18mu\raisemath{0.7875pt}{\leftmoon}}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\lunarradius}{\ensuremath{R_{\mkern-0.18mu\raisemath{0.7875pt}{\leftmoon}}}}
+\DeclareSIUnit{\parsec}{\text{pc}}
+\DeclareSIUnit[quantity-product = ]{\percent}{\char`\%}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\solarabsolutebluemagnitude}{\ensuremath{M_{B\!,\, \Sun}}}
+\DeclareSIUnit[unit-font-command = \mathit]{\solarabsolutebolometricmagnitude}{%
+  \ensuremath{M_{\text{bol, } \Sun}}
+}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\solarabsolutevisualmagnitude}{\ensuremath{M_{V\!,\, \Sun}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\solarapparentbluemagnitude}{\ensuremath{B_\Sun}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\solarapparentbolometricmagnitude}{%
+  \ensuremath{V_{\text{bol, } \Sun}}
+}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\solarapparentultravioletmagnitude}{\ensuremath{U_\Sun}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\solarapparentvisualmagnitude}{\ensuremath{V_\Sun}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\solareffectivetemperature}{\ensuremath{T_{\text{eff, }\Sun}}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\solarirradiance}{\ensuremath{E_\Sun}}
+\DeclareSIUnit[unit-font-command =
+\mathit]{\solarluminosity}{\ensuremath{L_\Sun}}
+\DeclareSIUnit[unit-font-command = \mathit]{\solarmass}{\ensuremath{M_\Sun}}
+\DeclareSIUnit[unit-font-command = \mathit]{\solarradius}{\ensuremath{R_\Sun}}
+\newcommand*{\timeperiod}{\rightascension}
+
+\endinput
