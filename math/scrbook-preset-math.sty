@@ -1,0 +1,174 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/math/scrbook-preset-math.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-math}[2025/06/01 The mathematics package%
+of the `scrbook-preset` bundle]
+
+\RequirePackage{mathtools} % Mathematical tools to use with `amsmath`
+\RequirePackage{amsthm} % Typesetting theorems (AMS style)
+% Must be loaded after `amsmath` (loaded by `mathtools`)
+\RequirePackage{centernot} % Centred \not command
+\RequirePackage[italic]{derivative} % Nice and easy derivatives
+\RequirePackage{etoolbox} % E-TeX tools for LaTeX
+\RequirePackage{mleftright} % Variants of delimiters
+% that act as maths open/close
+\RequirePackage{scrbook-preset-library} % The library package of
+% the `scrbook-preset` bundle
+\RequirePackage{siunitx} % A comprehensive (SI) units package
+\sisetup{%
+  exponent-base = {10},
+  exponent-product = {\times },
+  group-separator = {.},
+  input-decimal-markers = {.},
+  input-ignore = {,},
+  inter-unit-product = {\,},
+  output-decimal-marker = {,},
+  quantity-product = {\ },
+  range-phrase = {\text{\ hingga\ }},
+  text-series-to-math = true,
+}
+
+% MATHEMATICAL SYMBOLS
+%% Binary relations
+%%% Equality by definition
+\newcommand*{\defeq}{\coloneq}
+\newcommand*{\eqdef}{\eqcolon}
+
+%% Binary operations
+%%% Division sign (must be defined before the redefinition of \div)
+\newcommand*{\divsign}{÷}
+
+%%% Slash notation for division and fractions
+\NewDocumentCommand{\sfrac}{somm}{%
+  \IfBooleanTF{#1}{\mleft.#3\middle/#4\mright.}{%
+    \IfNoValueTF{#2}{#3/#4}{%
+      \IfStringsEqualTF{#2}{big}{#3\big/#4}{%
+        \IfStringsEqualTF{#2}{Big}{#3\Big/#4}{%
+          \IfStringsEqualTF{#2}{bigg}{#3\bigg/#4}{%
+            \IfStringsEqualTF{#2}{Bigg}{#3\Bigg/#4}{%
+              #3/#4
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+%% Operators
+%%% Logarithms
+\newcommand*{\binarylog}{\log_{2}}
+\newcommand*{\commonlog}{\log_{10}}
+\newcommand*{\naturallog}{\ln}
+
+%%% Differentials
+\newcommand*{\dd}{\odif}
+
+%%% Del operators
+\newcommand*{\grad}{\nabla}
+\AtBeginDocument{\renewcommand*{\div}{\nabla\cdot}}
+\newcommand*{\curl}{\nabla\times}
+\newcommand*{\laplacian}{\nabla^2}
+
+%%% Integrals
+
+% MATH-MODE ENVIRONMENTS
+%% Source: https://tex.stackexchange.com/a/183047
+\newenvironment{closealign}{\par\centering\(\displaystyle%
+  \begin{aligned}}{%
+\end{aligned}\)\par}
+
+% MATH-MODE MACROS
+%% Set theory
+%%% Set membership notation
+\newcommand*{\isin}{\in}
+
+%%% Brace delimiter and mathematical set cardinality macro
+\DeclarePairedDelimiter{\card}{\lvert}{\rvert}
+
+%%% Set-builder notation separator
+\newcommand{\suchthat}{\mid}
+
+%%% Brace delimiter and mathematical set macro
+%%% Source:
+%%% https://www.latex-project.org/publications/2020-egreg-TUB-tb127gregorio-math.pdf
+\ExplSyntaxOn
+\NewDocumentCommand{\set}{som}
+{
+  %%% limit the scope for \suchthat
+  \group_begin:
+  \cs_set_protected:Npn \suchthat
+  {
+    \tl_use:N \l__egreg_set_st_tl
+  }
+  \IfBooleanTF{#1}
+  {
+    \egreg_set_auto:n { #3 }
+  }
+  {
+    \egreg_set_fixed:nn { #2 } { #3 }
+  }
+  \group_end:
+}
+\tl_new:N \l__egreg_set_st_tl
+\cs_new_protected:Nn \__egreg_set_st:n
+{
+  \tl_set:Nn \l__egreg_set_st_tl { #1 }
+}
+\cs_new_protected:Nn \egreg_set_auto:n
+{
+  \__egreg_set_st:n
+  {
+    \nonscript\;
+    \middle\vert
+    \nonscript\;
+  }
+  \left\{ #1 \right\}
+}
+\cs_new_protected:Nn \egreg_set_fixed:nn
+{
+  \tl_if_novalue:nTF { #1 }
+  {
+    \__egreg_set_st:n { \mid }
+    \lbrace #2 \rbrace
+  }
+  {
+    \__egreg_set_st:n
+    { \mathrel{#1\vert} }
+    \mathopen{#1\lbrace}
+    #2
+    \mathclose{#1\rbrace}
+  }
+}
+\ExplSyntaxOff
+
+%% Analysis
+%%% Vertical bar delimiter and absolute value macro
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+%%% P-norm macro
+\DeclarePairedDelimiterXPP{\pnormaux}[2]{}{\lVert}{\rVert}{_#1}{%
+  \ifblank{#2}{\:\cdot\:}{#2}
+}
+\newcommand*{\pnorm}[2][p]{\pnormaux{#1}{#2}}
+
+%% Algebra
+%%% Vector notation
+%%% Source:
+% https://github.com/latex3/unicode-math/issues/463#issuecomment-387799849
+\AtBeginDocument{\renewcommand*{\vec}[1]{\symbf{#1}}}
+\DeclarePairedDelimiter{\coordinatevector}{(}{)}
+\newcommand*{\ihat}{\vec{i}}
+\newcommand*{\jhat}{\vec{j}}
+\newcommand*{\khat}{\vec{k}}
+
+%%% Double vertical bar delimiter and absolute value macro
+\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{%
+  \ifblank{#1}{\:\cdot\:}{#1}
+}
+
+%%% Angle bracket delimiter and inner product macro
+\DeclarePairedDelimiterX{\innerprod}[2]{\langle}{\rangle}{%
+  \ifblank{#1}{\cdot\,}{#1},\ifblank{#2}{\cdot}{#2}
+}
+
+\endinput

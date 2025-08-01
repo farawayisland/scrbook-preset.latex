@@ -1,0 +1,56 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/library/scrbook-preset-library-lua.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-library-lua}[2025/06/01 The lua module of%
+the library package of the `scrbook-preset` bundle]
+
+\RequirePackage{luacode} % Helper for executing lua code from within TeX
+
+% FUNCTIONS
+%% Perform automatic kerning adjustments for various symbol and
+%% character combinations with LuaTeX
+%% Source: https://tex.stackexchange.com/a/432291
+\begin{luacode}
+function suppl_math_kerning ( s )
+  -- Subscript combinations
+  -- \Gamma
+  s = s:gsub ("(\\Gamma)%s-_%s-(%b{})", "%1_{\\mkern-4mu   %2}" )
+  s = s:gsub ("(\\Gamma)%s-_%s-(%w)"  , "%1_{\\mkern-4mu   %2}" )
+  -- \nabla
+  s = s:gsub ("(\\nabla)%s-_%s-(%b{})", "%1_{\\mkern-4mu   %2}" )
+  s = s:gsub ("(\\nabla)%s-_%s-(%w)"  , "%1_{\\mkern-4mu   %2}" )
+  -- \Psi
+  s = s:gsub ("(\\Psi)%s-_%s-(%b{})"  , "%1_{\\mkern-3mu   %2}" )
+  s = s:gsub ("(\\Psi)%s-_%s-(%w)"    , "%1_{\\mkern-3mu   %2}" )
+  -- \Upsilon
+  s = s:gsub ("(\\Upsilon)%s-_%s-(%b{})","%1_{\\mkern-3mu  %2}" )
+  s = s:gsub ("(\\Upsilon)%s-_%s-(%w)"  ,"%1_{\\mkern-3mu  %2}" )
+  -- letters F, P, T
+  s = s:gsub ("([FPT])%s-_%s-(%b{})"  , "%1_{\\mkern-1.5mu %2}" )
+  s = s:gsub ("([FPT])%s-_%s-(%w)"    , "%1_{\\mkern-1.5mu %2}" )
+  -- letters V, W, Y
+  s = s:gsub ("([VWY])%s-_%s-(%b{})"  , "%1_{\\mkern-3mu   %2}" )
+  s = s:gsub ("([VWY])%s-_%s-(%w)"    , "%1_{\\mkern-3mu   %2}" )
+  -- letter f
+  s = s:gsub ("([f])%s-_%s-(%b{})"   , "%1_{\\mkern-2.25mu %2}" )
+  s = s:gsub ("([f])%s-_%s-(%w)"     , "%1_{\\mkern-2.25mu %2}" )
+
+  -- Superscript combinations
+  -- \Delta
+  s = s:gsub ("(\\Delta)%s-%^%s-(%b{})", "%1^{\\mkern-3mu  %2}" )
+  s = s:gsub ("(\\Delta)%s-%^%s-(%w)"  , "%1^{\\mkern-3mu  %2}" )
+  -- \Lambda
+  s = s:gsub ("(\\Lambda)%s-%^%s-(%b{})","%1^{\\mkern-3mu  %2}" )
+  s = s:gsub ("(\\Lambda)%s-%^%s-(%w)"  ,"%1^{\\mkern-3mu  %2}" )
+  -- \lambda
+  s = s:gsub ("(\\lambda)%s-%^%s-(%b{})","%1^{\\mkern-2mu  %2}" )
+  s = s:gsub ("(\\lambda)%s-%^%s-(%w)"  ,"%1^{\\mkern-2mu  %2}" )
+  -- letters A, L
+  s = s:gsub ("([AL])%s-%^%s-(%b{})"  , "%1^{\\mkern-1.5mu %2}" )
+  s = s:gsub ("([AL])%s-%^%s-(%w)"    , "%1^{\\mkern-1.5mu %2}" )
+
+  -- Simultaneous subscript and superscript combinations
+  return s
+end
+\end{luacode}
+
+\endinput
