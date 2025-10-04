@@ -71,11 +71,115 @@ of the `scrbook-preset` bundle]
 
 %%% Integrals
 
+% TEXT-MODE ENVIRONMENTS
+%% `amsthm` environments
+\definelength{\amsthmsep}{0.5\baselineskip}
+\newtheoremstyle{dotlessplain}
+{\amsthmsep}                                 % ABOVESPACE
+{\amsthmsep}                                 % BELOWSPACE
+{\itshape}                                   % BODYFONT
+{0pt}                                        % INDENT (empty value
+%                                              is the same as 0pt)
+{\(\rbullet\) \bfseries}                     % HEADFONT
+{}                                           % HEADPUNCT
+{\newline}                                   % HEADSPACE
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}} % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{dotlessdefinition}
+{\amsthmsep}                                 % ABOVESPACE
+{\amsthmsep}                                 % BELOWSPACE
+{\normalfont}                                % BODYFONT
+{0pt}                                        % INDENT (empty value
+%                                              is the same as 0pt)
+{\(\rbullet\) \bfseries}                     % HEADFONT
+{}                                           % HEADPUNCT
+{\newline}                                   % HEADSPACE
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}} % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{dotlessremark}
+{0.5\amsthmsep}                              % ABOVESPACE
+{0.5\amsthmsep}                              % BELOWSPACE
+{\normalfont}                                % BODYFONT
+{0pt}                                        % INDENT (empty value
+%                                              is the same as 0pt)
+{\itshape}                                   % HEADFONT
+{}                                           % HEADPUNCT
+{\newline}                                   % HEADSPACE
+{}                                           % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{custom}
+{10pt}                                       % ABOVESPACE
+{}                                           % BELOWSPACE
+{\normalfont}                                % BODYFONT
+{0pt}                                        % INDENT (empty value
+%                                              is the same as 0pt)
+{\(\rbullet\) \bfseries}                     % HEADFONT
+{}                                           % HEADPUNCT
+{\newline}                                   % HEADSPACE
+{\thmnote{#3 }\thmname{#1}}                  % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{proof}
+{\amsthmsep}                                 % ABOVESPACE
+{\amsthmsep}                                 % BELOWSPACE
+{\normalfont}                                % BODYFONT
+{0pt}                                        % INDENT (empty value
+%                                              is the same as 0pt)
+{\scshape}                                   % HEADFONT
+{}                                           % HEADPUNCT
+{\newline}                                   % HEADSPACE
+{\thmname{#1}\thmnote{ (#3)}}                % CUSTOM-HEAD-SPEC
+
+\theoremstyle{dotlessplain} % Italic body font
+\newtheorem{assumption}{Assumption}[axiom]
+\newtheorem{axiom}{Axiom}[chapter]
+\newtheorem{corollary}[subsection]{Corollary}
+\newtheorem{lemma}[subsection]{Lemma}
+\newtheorem{proposition}[subsection]{Proposition}
+\newtheorem{theorem}[subsection]{Theorem}
+
+\theoremstyle{dotlessdefinition} % Roman body font
+\newtheorem{definition}[subsection]{Definition}
+\newtheorem{example}[subsection]{Example}
+\newtheorem{exercise}[subsection]{Exercise}
+\newtheorem{remark}[subsection]{Remark}
+
+\theoremstyle{dotlessremark} % Roman body font, no extra space
+\newtheorem*{case}{Case}
+\newtheorem*{note}{Note}
+
+\theoremstyle{custom}
+\newtheorem*{problemsthm}{Problems}
+\newenvironment{problems}[1][]{%
+\begin{problemsthm}[#1]\leavevmode\vspace{-\baselineskip}}{%
+\end{problemsthm}}
+\newtheorem*{solutionsthm}{Solutions}
+\newenvironment{solutions}[1][]{%
+\begin{solutionsthm}[#1]\leavevmode\vspace{-\baselineskip}}{%
+\end{solutionsthm}}
+
+\theoremstyle{proof} % Roman body font
+\newtheorem*{proofthm}{Proof}
+\RenewDocumentEnvironment{proof}{O{} +b}{%
+  \proofthm%
+  \IfStringsEqualTF{#1}{QED}{\renewcommand*{\qedsymbol}{}}{}%
+  #2\IfStringsEqualTF{\qedsymbol}{}{}{\hfill\qedsymbol}%
+}{%
+  \endproofthm%
+}
+
+% QED symbol
+\renewcommand*{\qedsymbol}{\(\blacksquare\)}
+\newcommand*{\QEDhere}{\nobreak\enspace\(\blacksquare\)} % No line break
+\newcommand*{\QEDmath}{\tag*{\(\blacksquare\)}}
+
 % MATH-MODE ENVIRONMENTS
+%% Custom `align` environment without vertical spacing
 %% Source: https://tex.stackexchange.com/a/183047
-\newenvironment{closealign}{\par\centering\(\displaystyle%
+\newenvironment{closealign}{%
+  \par\centering\(\displaystyle%
   \begin{aligned}}{%
-\end{aligned}\)\par}
+  \end{aligned}\)\par
+}
 
 % MATH-MODE MACROS
 %% General
@@ -104,10 +208,15 @@ of the `scrbook-preset` bundle]
 \DeclareSpacedPairedDelimiter{\ceil}{\lceil}{\rceil}
 
 %% Set theory
-%%% Set membership notation
+%%% Set-membership notation
 \newcommand*{\isin}{\in}
 
-%%% Mathematical-set-cardinality macro
+%%% Set-theoretic binary operations
+\newcommand*{\intersection}{\cap}
+\newcommand*{\union}{\cup}
+\newcommand*{\without}{\setminus}
+
+%%% Set-cardinality macro
 \DeclarePairedDelimiterX{\cardaux}[1]{\lvert}{\rvert}{%
   \ifblank{#1}{\:\cdot\:}{#1}
 }
@@ -123,7 +232,7 @@ of the `scrbook-preset` bundle]
 %%% Set-builder notation separator
 \newcommand*{\suchthat}{\mid}
 
-%%% Mathematical-set macro
+%%% Set macro
 %%% Source:
 %%% https://www.latex-project.org/publications/2020-egreg-TUB-tb127gregorio-math.pdf
 \ExplSyntaxOn
@@ -238,7 +347,7 @@ of the `scrbook-preset` bundle]
 %% Algebra
 %%% Vector notation
 %%% Source:
-% https://github.com/latex3/unicode-math/issues/463#issuecomment-387799849
+%%% https://github.com/latex3/unicode-math/issues/463#issuecomment-387799849
 \AtBeginDocument{\renewcommand*{\vec}[1]{\symbf{#1}}}
 \DeclareSpacedPairedDelimiter{\coordinatevector}{(}{)}
 \newcommand*{\ihat}{\vec{i}}

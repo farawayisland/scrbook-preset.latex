@@ -3,6 +3,7 @@
 \ProvidesPackage{scrbook-preset-library}[2025/06/01 The library package of%
 the `scrbook-preset` bundle]
 
+\RequirePackage{comment} % Selectively include/exclude portions of text
 \RequirePackage{graphicx} % Enhanced support for graphics
 \RequirePackage{mathtools} % Mathematical tools to use with `amsmath`
 \RequirePackage{scalerel} % Constrained scaling and stretching of objects
@@ -111,9 +112,30 @@ the `scrbook-preset` bundle]
   \excludecomment{Solution}}
 }
 
-%% SUBSCRIPTS AND SUPERSCRIPTS
-%%% \raisemath{<height>}{<symbol>}
-%%% Source: https://tex.stackexchange.com/a/5192
+% LENGTHS
+%% Length-defining macro
+\newcommand*{\definelength}[2]{\newlength{#1}\setlength{#1}{#2}}
+
+% PACKAGE MANAGEMENT
+%% Package-disabling macros
+%% Source: https://tex.stackexchange.com/a/39418
+\newcommand{\disablepackage}[2]{%
+  \disable@package@load{#1}{#2}%
+}
+\newcommand{\reenablepackage}[1]{%
+  \reenable@package@load{#1}%
+}
+
+% RULES
+%% Custom \hrulefill macro
+%% Source: https://tex.stackexchange.com/a/17130
+\newcommand*{\varhrulefill}[1][0.4pt]{%
+  \leavevmode\leaders\hrule height#1\hfill\kern0pt
+}
+
+% SUBSCRIPTS AND SUPERSCRIPTS
+%% \raisemath{<height>}{<symbol>}
+%% Source: https://tex.stackexchange.com/a/5192
 \newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}
 \newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}
 
