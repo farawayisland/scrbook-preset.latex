@@ -1,0 +1,29 @@
+% ~/Library/texmf/tex/latex/scrbook-preset/layout/scrbook-preset-layout-languages.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrbook-preset-layout-languages}[2025/06/01 The languages%
+module of the layout package of the `scrbook-preset` bundle]
+
+% LANGUAGE SETTINGS
+%% Headings language
+\newcommand*{\headingslanguage}{english}
+\AtBeginDocument{%
+  \IfStringsEqualTF{\headingslanguage}{indonesian}{%
+    \renewcommand*{\assumptionname}{Asumsi}
+    \renewcommand*{\axiomname}{Aksioma}
+    \renewcommand*{\chaptername}{Bab}
+    \renewcommand*{\contentsname}{Daftar Isi}
+    \renewcommand*{\corollaryname}{Korolari}
+    \renewcommand*{\definitionname}{Definisi}
+    \renewcommand*{\examplename}{Contoh}
+    \renewcommand*{\exercisename}{Latihan}
+    \renewcommand*{\lemmaname}{Lema}
+    \renewcommand*{\notename}{Catatan}
+    \renewcommand*{\partname}{Bagian}
+    \renewcommand*{\proofname}{Bukti}
+    \renewcommand*{\propositionname}{Proposisi}
+    \renewcommand*{\remarkname}{Komentar}
+    \renewcommand*{\theoremname}{Teorema}
+  }{}
+}
+
+\endinput

@@ -19,13 +19,15 @@ the `scrbook-preset` bundle]
 % See https://tex.stackexchange.com/a/511714 and
 % https://github.com/schlcht/microtype/issues/53
 \RequirePackage[babel, nopatch = eqnum]{microtype}
-\RequirePackage{multirow} % Create tabular cells spanning multiple rows
 % Subliminal refinements towards typographical perfection
-\RequirePackage{nicematrix} % Improve the typesetting of
-% mathematical matrices with PGF
+\RequirePackage{multirow} % Create tabular cells spanning multiple rows
+\RequirePackage{nicematrix}
+% Improve the typesetting of mathematical matrices with PGF
 \RequirePackage{setspace} % Set space between lines
-\RequirePackage[svgnames]{xcolor} % Driver-independent
-% color extensions for LaTeX and pdfLaTeX
+\RequirePackage{tcolorbox}
+% Coloured boxes, for LaTeX examples and theorems, etc.
+\RequirePackage[svgnames]{xcolor}
+% Driver-independent color extensions for LaTeX and pdfLaTeX
 \setdisplayskipstretch{1.0}
 
 \endinput

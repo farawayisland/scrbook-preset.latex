@@ -3,12 +3,16 @@
 \ProvidesPackage{scrbook-preset-library}[2025/06/01 The library package of%
 the `scrbook-preset` bundle]
 
+\RequirePackage{comment} % Selectively include/exclude portions of text
 \RequirePackage{graphicx} % Enhanced support for graphics
 \RequirePackage{mathtools} % Mathematical tools to use with `amsmath`
 \RequirePackage{scalerel} % Constrained scaling and stretching of objects
 \RequirePackage{scaletextbullet} % Resize \textbullet
 % without changing its vertical center
-\RequirePackage{scrbook-preset-library-lua}
+\RequirePackage{scrbook-preset-library-lua} % The lua module of the library
+% package of the `scrbook-preset` bundle
+\RequirePackage{setspace} % Set space between lines
+\RequirePackage{tikz} % Create PostScript and PDF graphics in TeX
 \RequirePackage[svgnames]{xcolor} % Driver-independent
 % color extensions for LaTeX and pdfLaTeX
 
@@ -111,9 +115,47 @@ the `scrbook-preset` bundle]
   \excludecomment{Solution}}
 }
 
-%% SUBSCRIPTS AND SUPERSCRIPTS
-%%% \raisemath{<height>}{<symbol>}
-%%% Source: https://tex.stackexchange.com/a/5192
+%% `TerminalOutputTikZPicture` environment
+%% Source: https://tex.stackexchange.com/a/61898
+\NewDocumentEnvironment{TerminalOutputTikZPicture}{O{0.2cm} +b}{%
+  \tikzpicture%
+  \node [inner sep = 0pt] at (0,0) {
+    #2%
+  };
+  \draw [white, rounded corners = #1, line width = #1]
+  (current bounding box.north west) --
+  (current bounding box.north east) --
+  (current bounding box.south east) --
+  (current bounding box.south west) -- cycle
+  ;
+}{%
+  \endtikzpicture%
+}
+
+% LENGTHS
+%% Length-defining macro
+\newcommand*{\definelength}[2]{\newlength{#1}\setlength{#1}{#2}}
+
+% PACKAGE MANAGEMENT
+%% Package-disabling macros
+%% Source: https://tex.stackexchange.com/a/39418
+\newcommand{\disablepackage}[2]{%
+  \disable@package@load{#1}{#2}%
+}
+\newcommand{\reenablepackage}[1]{%
+  \reenable@package@load{#1}%
+}
+
+% RULES
+%% Custom \hrulefill macro
+%% Source: https://tex.stackexchange.com/a/17130
+\newcommand*{\varhrulefill}[1][0.4pt]{%
+  \leavevmode\leaders\hrule height#1\hfill\kern0pt
+}
+
+% SUBSCRIPTS AND SUPERSCRIPTS
+%% \raisemath{<height>}{<symbol>}
+%% Source: https://tex.stackexchange.com/a/5192
 \newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}
 \newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}
 
