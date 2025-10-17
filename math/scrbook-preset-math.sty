@@ -26,6 +26,14 @@ of the `scrbook-preset` bundle]
   range-phrase = {\text{\ hingga\ }},
   text-series-to-math = true,
 }
+\RequirePackage{tikz-cd} % Create commutative diagrams with TikZ
+\tikzcdset{
+  arrow style = tikz,
+  diagrams = {
+    >={Straight Barb[round, scale = 0.675, width = 7pt]}
+    % >={Stealth[inset = 2.5pt, round]}
+  }
+}
 
 % MATHEMATICAL SYMBOLS
 %% Binary relations
@@ -71,11 +79,153 @@ of the `scrbook-preset` bundle]
 
 %%% Integrals
 
+%%% NED symbol
+\renewcommand*{\qedsymbol}{\(\mdlgblksquare\)}
+\newcommand*{\NEDhere}{\(\mdlgblksquare\)} % No line break
+\newcommand*{\NEDmath}{\tag*{\(\mdlgblksquare\)}}
+
+% TEXT-MODE ENVIRONMENTS
+%% `amsthm` environments
+%% Sources:
+% https://tex.stackexchange.com/a/8091
+% https://tex.stackexchange.com/a/17555
+% https://tex.stackexchange.com/a/31379
+% https://tex.stackexchange.com/a/85081
+% https://tex.stackexchange.com/a/391446
+% https://tex.stackexchange.com/a/444749
+% https://tex.stackexchange.com/a/597908
+% https://tex.stackexchange.com/a/752203
+\newcommand*{\thmbullet}{\raisebox{-0.05ex}{\rtextbullet}}
+\definelength{\thmsep}{0.5\baselineskip}
+\newtheoremstyle{dotlessplain}
+{\thmsep}                                             % ABOVESPACE
+{\thmsep}                                             % BELOWSPACE
+{\itshape}                                            % BODYFONT
+{0pt}                                                 % INDENT (empty value
+%                                                       is the same as 0pt)
+{\bfseries\makebox[0pt][r]{\thmbullet\hspace{0.3em}}} % HEADFONT
+{}                                                    % HEADPUNCT
+{\newline}                                            % HEADSPACE
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}          % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{dotlessdefinition}
+{\thmsep}                                             % ABOVESPACE
+{\thmsep}                                             % BELOWSPACE
+{\normalfont}                                         % BODYFONT
+{0pt}                                                 % INDENT (empty value
+%                                                       is the same as 0pt)
+{\bfseries\makebox[0pt][r]{\thmbullet\hspace{0.3em}}} % HEADFONT
+{}                                                    % HEADPUNCT
+{\newline}                                            % HEADSPACE
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}          % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{dotlessremark}
+{0.5\thmsep}                                          % ABOVESPACE
+{0.5\thmsep}                                          % BELOWSPACE
+{\normalfont}                                         % BODYFONT
+{0pt}                                                 % INDENT (empty value
+%                                                       is the same as 0pt)
+{\itshape}                                            % HEADFONT
+{}                                                    % HEADPUNCT
+{\newline}                                            % HEADSPACE
+{}                                                    % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{custom}
+{10pt}                                                % ABOVESPACE
+{}                                                    % BELOWSPACE
+{\normalfont}                                         % BODYFONT
+{0pt}                                                 % INDENT (empty value
+%                                                       is the same as 0pt)
+{\bfseries\makebox[0pt][r]{\thmbullet\hspace{0.3em}}} % HEADFONT
+{}                                                    % HEADPUNCT
+{\newline}                                            % HEADSPACE
+{\thmnote{#3 }\thmname{#1}}                           % CUSTOM-HEAD-SPEC
+
+\AtBeginDocument{%
+  \NewDocumentCommand{\newcustomtheorem}{m m}{%
+    \newtheorem{custom#1inner}{#2}
+    \crefformat{custom#1inner}{##2#2~##1##3}
+    \NewDocumentEnvironment{custom#1}{m}{%
+      \IfBlankTF{##1}{%
+        \expandafter\renewcommand\csname thecustom#1inner\endcsname{\unskip}
+      }{%
+        \expandafter\renewcommand\csname thecustom#1inner\endcsname{##1}
+      }%
+      \csname custom#1inner\endcsname
+    }{%
+      \csname endcustom#1inner\endcsname
+    }
+  }
+}
+
+%% Theorem style with italic body font
+\theoremstyle{dotlessplain}
+\newcommand*{\assumptionname}{Assumption}
+\newcommand*{\axiomname}{Axiom}
+\newcommand*{\corollaryname}{Corollary}
+\newcommand*{\lemmaname}{Lemma}
+\newcommand*{\propositionname}{Proposition}
+\newcommand*{\theoremname}{Theorem}
+
+\newtheorem{axiom}{\axiomname}[chapter]
+\newtheorem{assumption}{\assumptionname}[axiom]
+\newtheorem{corollary}[subsection]{\corollaryname}
+\newtheorem{lemma}[subsection]{\lemmaname}
+\newtheorem{proposition}[subsection]{\propositionname}
+\newtheorem{theorem}[subsection]{\theoremname}
+
+\AtBeginDocument{%
+  \theoremstyle{dotlessplain}
+  \newcustomtheorem{assumption}{\assumptionname}
+  \newcustomtheorem{axiom}{\axiomname}
+  \newcustomtheorem{corollary}{\corollaryname}
+  \newcustomtheorem{lemma}{\lemmaname}
+  \newcustomtheorem{proposition}{\propositionname}
+  \newcustomtheorem{theorem}{\theoremname}
+}
+
+%% Theorem style with roman body font
+\theoremstyle{dotlessdefinition}
+\newcommand*{\definitionname}{Definition}
+\newcommand*{\examplename}{Example}
+\newcommand*{\exercisename}{Exercise}
+\newcommand*{\remarkname}{Remark}
+
+\newtheorem{definition}[subsection]{\definitionname}
+\newtheorem{example}[subsection]{\examplename}
+\newtheorem{exercise}[subsection]{\exercisename}
+\newtheorem{remark}[subsection]{\remarkname}
+
+\AtBeginDocument{%
+  \theoremstyle{dotlessdefinition}
+  \newcustomtheorem{definition}{Definition}
+  \newcustomtheorem{example}{Example}
+  \newcustomtheorem{exercise}{Exercise}
+  \newcustomtheorem{remark}{Remark}
+}
+
+%% Theorem style with roman body font and no extra space
+\theoremstyle{dotlessremark}
+\newcommand*{\notename}{Note}
+
+\newtheorem*{note}{\notename}
+
+%% Proof environment redefinition
+\NewEnvironmentCopy{oldproof}{proof}
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\bfseries#1\nopunct]\( \)\par\nobreak\ignorespaces%
+}{\endoldproof}
+
+\AtBeginDocument{\theoremstyle{dotlessplain}}
+
 % MATH-MODE ENVIRONMENTS
+%% Custom `align` environment without vertical spacing
 %% Source: https://tex.stackexchange.com/a/183047
-\newenvironment{closealign}{\par\centering\(\displaystyle%
+\newenvironment{closealign}{%
+  \par\centering\(\displaystyle%
   \begin{aligned}}{%
-\end{aligned}\)\par}
+  \end{aligned}\)\par
+}
 
 % MATH-MODE MACROS
 %% General
@@ -103,11 +253,41 @@ of the `scrbook-preset` bundle]
 %%% Ceil paired-delimiters
 \DeclareSpacedPairedDelimiter{\ceil}{\lceil}{\rceil}
 
-%% Set theory
-%%% Set membership notation
-\newcommand*{\isin}{\in}
+%% Mathematical logic
+%%% Connectives
+%%%% Material conditional (material implication)
+\newcommand*{\materiallyimplies}{\to}
 
-%%% Mathematical-set-cardinality macro
+%%% Quantifiers
+%%%% Existential quantifier
+\newcommand*{\thereexists}{\exists}
+\newcommand*{\thereissome}{\exists}
+
+%%%% Universal quantifier
+\newcommand*{\forevery}{\forall}
+
+%% Set theory
+%%% Set-membership
+\newcommand*{\arein}{\isin}
+\newcommand*{\arenotin}{\isnotin}
+\newcommand*{\beingin}{\isin}
+\newcommand*{\notbeingin}{\isnotin}
+\newcommand*{\isin}{\in}
+\newcommand*{\isnotin}{\notin}
+\newcommand*{\willbein}{\isin}
+\newcommand*{\willnotbein}{\isnotin}
+
+%%% Set-theoretic binary relations
+%%%% Set-inclusion (subset relation)
+\newcommand*{\isapropersubsetof}{\subset}
+\newcommand*{\isasubsetof}{\subseteq}
+
+%%% Set-theoretic binary operations
+\newcommand*{\intersection}{\cap}
+\newcommand*{\union}{\cup}
+\newcommand*{\without}{\setminus}
+
+%%% Set-cardinality macro
 \DeclarePairedDelimiterX{\cardaux}[1]{\lvert}{\rvert}{%
   \ifblank{#1}{\:\cdot\:}{#1}
 }
@@ -123,7 +303,7 @@ of the `scrbook-preset` bundle]
 %%% Set-builder notation separator
 \newcommand*{\suchthat}{\mid}
 
-%%% Mathematical-set macro
+%%% Set macro
 %%% Source:
 %%% https://www.latex-project.org/publications/2020-egreg-TUB-tb127gregorio-math.pdf
 \ExplSyntaxOn
@@ -184,6 +364,17 @@ of the `scrbook-preset` bundle]
   }
 }
 
+%%% n-tuples
+\DeclareSpacedPairedDelimiter{\orderedpair}{(}{)}
+\DeclareSpacedPairedDelimiter{\tuple}{(}{)}
+
+%% Order theory
+%%% Lower and upper bounds
+\DeclareMathOperator{\glb}{glb}
+\DeclareMathOperator{\lb}{lb}
+\DeclareMathOperator{\lub}{gub}
+\DeclareMathOperator{\ub}{ub}
+
 %% Analysis
 %%% Absolute-value macro
 \DeclarePairedDelimiterX{\absaux}[1]{\lvert}{\rvert}{%
@@ -236,9 +427,43 @@ of the `scrbook-preset` bundle]
 }
 
 %% Algebra
+%%% Number-set notation
+\newcommand*{\numberset}[1]{\symbf{#1}}
+
+%%%% Natural numbers
+\newcommand*{\naturalnumbers}{\numberset{N}}
+\newcommand*{\naturalnumberswithoutzero}{\numberset{N}_0}
+\newcommand*{\naturalnumberswithzero}{\numberset{N}_1}
+\newcommand*{\naturals}{\numberset{N}}
+\newcommand*{\naturalswithoutzero}{\numberset{N}_1}
+\newcommand*{\naturalswithzero}{\numberset{N}_0}
+
+%%%% Integers
+\newcommand*{\integers}{\numberset{Z}}
+\newcommand*{\integersgreaterthanone}{\numberset{Z}_{>1}}
+\newcommand*{\negativeintegers}{\numberset{Z}_{<0}}
+\newcommand*{\nonnegativeintegers}{\numberset{Z}_{\geq0}}
+\newcommand*{\nonpositiveintegers}{\numberset{Z}_{\leq0}}
+\newcommand*{\positiveintegers}{\numberset{Z}_{>0}}
+\newcommand*{\primenumbers}{\numberset{P}}
+\newcommand*{\primes}{\numberset{P}}
+
+%%%% Rational numbers
+\newcommand*{\rationalnumbers}{\numberset{N}}
+\newcommand*{\rationals}{\numberset{N}}
+
+%%%% Real numbers
+\newcommand*{\irrationalnumbers}{\numberset{R}\setminus\numberset{N}}
+\newcommand*{\irrationals}{\numberset{R}\setminus\numberset{N}}
+\newcommand*{\realnumbers}{\numberset{R}}
+\newcommand*{\reals}{\numberset{R}}
+
+%%%% Complex numbers
+\newcommand*{\complexnumbers}{\numberset{N}}
+
 %%% Vector notation
 %%% Source:
-% https://github.com/latex3/unicode-math/issues/463#issuecomment-387799849
+%%% https://github.com/latex3/unicode-math/issues/463#issuecomment-387799849
 \AtBeginDocument{\renewcommand*{\vec}[1]{\symbf{#1}}}
 \DeclareSpacedPairedDelimiter{\coordinatevector}{(}{)}
 \newcommand*{\ihat}{\vec{i}}
@@ -269,6 +494,30 @@ of the `scrbook-preset` bundle]
       \innerprodaux[#2]{#3#4}{#5#3}
     }
   }
+
 }
+
+%% Category theory
+%%% Morphisms
+\NewCommandCopy{\isom}{\cong}
+
+%% Number theory
+%%% Divisibility
+%%%% Divisors
+\newcommand*{\divides}{\mid}
+\newcommand*{\doesnotdivide}{\nmid}
+\newcommand*{\willdivide}{\divides}
+\newcommand*{\willnotdivide}{\doesnotdivide}
+
+%%%% Integer division
+\DeclareMathOperator{\intdiv}{div}
+
+%%%% Greatest common divisor and least common multiple
+% \DeclareMathOperator{\gcd}{gcd}
+\DeclareMathOperator{\lcm}{lcm}
+
+%%% Modular arithmetic
+\newcommand*{\ceq}{\equiv}
+\NewDocumentCommand{\congmod}{m m m}{#1 \ceq #2 \pmod #3}
 
 \endinput

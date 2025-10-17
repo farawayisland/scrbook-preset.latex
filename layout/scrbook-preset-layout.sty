@@ -8,6 +8,7 @@ the `scrbook-preset` bundle]
 \RequirePackage{scrhack} % Compatibility package to emulate
 % the former KOMA-Script package `scrhack`
 \RequirePackage{scrlayer-scrpage} % Define and manage page styles
+\RequirePackage{scrbook-preset-layout-languages}
 \if@twoside%
 \RequirePackage{scrbook-preset-layout-twoside}
 \else%
@@ -15,28 +16,6 @@ the `scrbook-preset` bundle]
 \fi%
 \RequirePackage{scrbook-preset-library} % The library package of
 \RequirePackage{tabularray} % Typeset tabulars and arrays with LaTeX3
-% LANGUAGE SETTINGS
-%% Headings language
-\newcommand*{\headingslanguage}{english}
-
-%% \contentsname language
-\AtBeginDocument{%
-  \IfStringsEqualTF{\headingslanguage}{indonesian}{%
-    \renewcommand*{\contentsname}{Daftar Isi}
-  }{}
-}
-%% \partname language
-\AtBeginDocument{%
-  \IfStringsEqualTF{\headingslanguage}{indonesian}{%
-    \renewcommand*{\partname}{Bagian}
-  }{}
-}
-%% \chaptername language
-\AtBeginDocument{%
-  \IfStringsEqualTF{\headingslanguage}{indonesian}{%
-    \renewcommand*{\chaptername}{Bab}
-  }{}
-}
 
 % TITLE PAGE
 %% Raised hyphen in date format
@@ -189,6 +168,10 @@ the `scrbook-preset` bundle]
   \@startsection{subparagraph}{5}{\z@ }{3.25ex \@plus 1ex
   \@minus 0.2ex}{-1em}{\normalfont\normalsize\bfseries}
 }%
+
+% SECTION CONTENTS
+%% Paragraph indentation
+\setlength{\parindent}{1.5em}
 
 % LAYOUTS OF LIST ENVIRONMENTS
 %% `enumitem` list environments
