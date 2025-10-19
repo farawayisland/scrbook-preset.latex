@@ -113,4 +113,28 @@ of the fonts package of the `scrbook-preset` bundle]
   \def\oiiint{\newoiiint}
 }
 
+% MATH-MODE MACROS
+%%% Comma-splitting macro
+%%% Source: https://tex.stackexchange.com/a/309558
+\ExplSyntaxOn
+
+\NewDocumentCommand{\splitatcommas}{m}
+{
+  \group_begin:
+  \int_compare:nNnF { \char_value_mathcode:n {`,} }= {"8000}
+  {
+    \char_set_active_eq:nN {`,} \__kennytm_comma:
+    \char_set_mathcode:nn {`,} {"8000}
+  }
+  #1
+  \group_end:
+}
+\cs_new_protected:Ne \__kennytm_comma:
+{
+  \mathchar\char_value_mathcode:n {`,}~
+  \penalty0~\exp_not:n { \hspace{0pt plus 1em} }
+}
+
+\ExplSyntaxOff
+
 \endinput
