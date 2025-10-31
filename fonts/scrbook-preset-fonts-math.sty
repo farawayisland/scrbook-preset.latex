@@ -117,7 +117,6 @@ of the fonts package of the `scrbook-preset` bundle]
 %%% Comma-splitting macro
 %%% Source: https://tex.stackexchange.com/a/309558
 \ExplSyntaxOn
-
 \NewDocumentCommand{\splitatcommas}{m}
 {
   \group_begin:
@@ -134,7 +133,30 @@ of the fonts package of the `scrbook-preset` bundle]
   \mathchar\char_value_mathcode:n {`,}~
   \penalty0~\exp_not:n { \hspace{0pt plus 1em} }
 }
-
 \ExplSyntaxOff
+
+%% Set theory
+%%% Set-theoretic binary operations
+%%%% Set difference
+%%%%% Source: https://tex.stackexchange.com/a/87117
+\AtBeginDocument{%
+  \NewCommandCopy{\oldsetminus}{\setminus}
+  \newcommand{\rsetminus}{\mathbin{\mathpalette\rsetminusaux\relax}}
+  \newcommand{\rsetminusaux}[2]{\mspace{-5mu}
+    \raisebox{\rsmraise{#1}\depth}{\rotatebox[origin =
+    c]{-20}{\(#1\oldsetminus\)}}
+    \mspace{-4mu}
+  }
+  \newcommand\rsmraise[1]{%
+    \ifx#1\displaystyle 0.6\else
+    \ifx#1\textstyle 0.6\else
+    \ifx#1\scriptstyle 0.4\else
+    0.25%
+    \fi
+    \fi
+  \fi}
+  \RenewCommandCopy{\setminus}{\rsetminus}
+  \newcommand*{\without}{\setminus}
+}
 
 \endinput

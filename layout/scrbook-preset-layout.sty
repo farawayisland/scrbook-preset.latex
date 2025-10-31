@@ -58,22 +58,32 @@ the `scrbook-preset` bundle]
 \RedeclareSectionCommand[tocindent = 0em]{section}
 \RedeclareSectionCommand[tocindent = 2.3em]{subsection}
 
-%% Replace \autodot with "." for section entries in ToC and section headings
-\RedeclareSectionCommand[tocentrynumberformat = \def\autodot{.}]{chapter}
-\xpretocmd{\chapterformat}{\def\autodot{.}}{}{\cfPatchFailed}
+%% Replace \autodot with "." for ToC entries and headings of chapters
+%% Source: https://tex.stackexchange.com/a/510236
+\newcommand*{\entrynumberwithdot}[1]{\def\autodot{.}#1}
+\DeclareTOCStyleEntry[
+  entrynumberformat = \entrynumberwithdot
+]{chapter}{chapter}
+\xpatchcmd{\chapterformat}{\autodot}{.}{}{\PatchFailed}
 
 %% Dot leaders in ToC
 \renewcommand*{\@dotsep}{3} % default = 4.5
 
-%% Remove part entry page number in ToC
-\RedeclareSectionCommand[tocpagenumberbox = \emptypagenumberbox]{part}
+%% Remove part-entry page-number in ToC
 \newcommand*{\emptypagenumberbox}[1]{}
+\DeclareTOCStyleEntry[
+  pagenumberbox = \emptypagenumberbox
+]{part}{part}
+\RedeclareSectionCommand[tocpagenumberbox = \emptypagenumberbox]{part}
 
-%% tocpagenumberbox
-\RedeclareSectionCommands[
-  tocpagenumberbox = \tocpagenumberbox
-]{section, subsection}
-\newcommand*{\tocpagenumberbox}[1]{\makebox[1.5em][r]{#1}}
+%% Page-number box in ToC
+\newcommand*{\pagenumberbox}[1]{\makebox[1.5em][r]{#1}}
+\DeclareTOCStyleEntry[
+  pagenumberbox = \pagenumberbox
+]{section}{section}
+\DeclareTOCStyleEntry[
+  pagenumberbox = \pagenumberbox
+]{subsection}{subsection}
 
 %% Font settings for ToC entries
 \DeclareTOCStyleEntry[%

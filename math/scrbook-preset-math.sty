@@ -39,9 +39,13 @@ of the `scrbook-preset` bundle]
 
 % MATHEMATICAL SYMBOLS
 %% Binary relations
-%%% Equality by definition
+%%% Equality
+%%%% Equality by definition
 \newcommand*{\defeq}{\coloneq}
 \newcommand*{\eqdef}{\eqcolon}
+
+%%%% Questionable equality
+\newcommand*{\questioneq}{\overset{?}{=}}
 
 %% Binary operations
 %%% Division sign (must be defined before the redefinition of \div)
@@ -260,6 +264,10 @@ of the `scrbook-preset` bundle]
 %%%% Material conditional (material implication)
 \newcommand*{\materiallyimplies}{\to}
 
+%%%% Negation
+\newcommand*{\longnegationof}[1]{\overline{#1}}
+\newcommand*{\negationof}[1]{\bar{#1}}
+
 %%% Quantifiers
 %%%% Existential quantifier
 \newcommand*{\thereexists}{\exists}
@@ -285,9 +293,11 @@ of the `scrbook-preset` bundle]
 \newcommand*{\isasubsetof}{\subseteq}
 
 %%% Set-theoretic binary operations
+%%%% Intersection
 \newcommand*{\intersection}{\cap}
+
+%%%% Union
 \newcommand*{\union}{\cup}
-\newcommand*{\without}{\setminus}
 
 %%% Set-cardinality macro
 \DeclarePairedDelimiterX{\cardaux}[1]{\lvert}{\rvert}{%
@@ -463,6 +473,7 @@ of the `scrbook-preset` bundle]
 \newcommand*{\rationals}{\numberset{N}}
 
 %%%% Real numbers
+\newcommand*{\nonzeroreals}{\numberset{R}^*}
 \newcommand*{\irrationalnumbers}{\numberset{R}\setminus\numberset{N}}
 \newcommand*{\irrationals}{\numberset{R}\setminus\numberset{N}}
 \newcommand*{\realnumbers}{\numberset{R}}
@@ -532,8 +543,7 @@ of the `scrbook-preset` bundle]
 %%%% Integer division
 \DeclareMathOperator{\intdiv}{div}
 
-%%%% Greatest common divisor and least common multiple
-% \DeclareMathOperator{\gcd}{gcd}
+%%%% Least common multiple
 \DeclareMathOperator{\lcm}{lcm}
 
 %%% Modular arithmetic
