@@ -7,6 +7,14 @@ of the `scrbook-preset` bundle]
 \RequirePackage{amsthm} % Typesetting theorems (AMS style)
 % Must be loaded after `amsmath` (loaded by `mathtools`)
 \RequirePackage{centernot} % Centred \not command
+\RequirePackage{circuitikz} % Draw electrical networks with TikZ
+\ctikzset{
+  bipoles/crossing/size = 0.6,
+  bipoles/thickness = 1,
+  logic ports = ieee,
+  logic ports/scale = 0.5,
+  tripoles/thickness = 1,
+}
 \RequirePackage[italic]{derivative} % Nice and easy derivatives
 \RequirePackage{etoolbox} % E-TeX tools for LaTeX
 \RequirePackage{mleftright} % Variants of delimiters
@@ -26,6 +34,12 @@ of the `scrbook-preset` bundle]
   range-phrase = {\text{\ hingga\ }},
   text-series-to-math = true,
 }
+\RequirePackage{tikz} % Create PostScript and PDF graphics in TeX
+\usetikzlibrary{calligraphy} % To enable calligraphic style drawings in TikZ
+\usetikzlibrary{decorations.pathreplacing} % Defines decorations that replace
+% the to-be-decorated path by another path
+\usetikzlibrary{intersections} % Allows automated calculation of path
+% intersections
 \RequirePackage{tikz-cd} % Create commutative diagrams with TikZ
 \tikzcdset{
   arrow style = tikz,
@@ -52,14 +66,14 @@ of the `scrbook-preset` bundle]
 \newcommand*{\divsign}{÷}
 
 %%% Slash notation for division and fractions
-\NewDocumentCommand{\sfrac}{somm}{%
-  \IfBooleanTF{#1}{\mleft.#3\middle/#4\mright.}{%
-    \IfNoValueTF{#2}{#3/#4}{%
-      \IfStringsEqualTF{#2}{big}{#3\big/#4}{%
-        \IfStringsEqualTF{#2}{Big}{#3\Big/#4}{%
-          \IfStringsEqualTF{#2}{bigg}{#3\bigg/#4}{%
-            \IfStringsEqualTF{#2}{Bigg}{#3\Bigg/#4}{%
-              #3/#4
+\NewDocumentCommand{\sfrac}{s o D<>{} m m}{%
+  \IfBooleanTF{#1}{\mleft.#4#3\middle/#3#5\mright.}{%
+    \IfNoValueTF{#2}{#4#3/#3#5}{%
+      \IfStringsEqualTF{#2}{big}{#4#3\big/#3#5}{%
+        \IfStringsEqualTF{#2}{Big}{#4#3\Big/#3#5}{%
+          \IfStringsEqualTF{#2}{bigg}{#4#3\bigg/#3#5}{%
+            \IfStringsEqualTF{#2}{Bigg}{#4#3\Bigg/#3#5}{%
+              #4#3/#3#5
             }
           }
         }
@@ -85,10 +99,10 @@ of the `scrbook-preset` bundle]
 
 %%% Integrals
 
-%%% NED symbol
+%%% QED symbol
 \renewcommand*{\qedsymbol}{\(\mdlgblksquare\)}
-\newcommand*{\NEDhere}{\(\mdlgblksquare\)} % No line break
-\newcommand*{\NEDmath}{\tag*{\(\mdlgblksquare\)}}
+\newcommand*{\QEDhere}{\(\mdlgblksquare\)}
+\newcommand*{\QEDmath}{\tag*{\(\mdlgblksquare\)}}
 
 % TEXT-MODE ENVIRONMENTS
 %% `amsthm` environments
@@ -216,12 +230,25 @@ of the `scrbook-preset` bundle]
 
 \newtheorem*{note}{\notename}
 
-%% Proof environment redefinition
+%% Proof environments
+%%% Proof environment redefinition
 \NewEnvironmentCopy{oldproof}{proof}
 \renewenvironment{proof}[1][\proofname]{%
   \oldproof[\bfseries#1\nopunct]\( \)\par\nobreak\ignorespaces%
 }{\endoldproof}
 
+%%% Headless proof environment
+%%% Source: https://tex.stackexchange.com/a/263475
+\newenvironment{headlessproof}{\par
+  \pushQED{\qed}%
+  \normalfont\topsep0\p@\@plus6\p@\relax
+  \trivlist
+\item[]\ignorespaces
+}{%
+  \popQED\endtrivlist\@endpefalse
+}
+
+%% Set default theorem style
 \AtBeginDocument{\theoremstyle{dotlessplain}}
 
 % MATH-MODE ENVIRONMENTS
@@ -294,6 +321,7 @@ of the `scrbook-preset` bundle]
 
 %%% Set-theoretic binary operations
 %%%% Intersection
+\newcommand*{\intersect}{\cap}
 \newcommand*{\intersection}{\cap}
 
 %%%% Union
@@ -313,6 +341,7 @@ of the `scrbook-preset` bundle]
 }
 
 %%% Set-builder notation separator
+\newcommand*{\forwhich}{\mid}
 \newcommand*{\suchthat}{\mid}
 
 %%% Set macro
@@ -388,12 +417,23 @@ of the `scrbook-preset` bundle]
   }
 }
 
+%%% Functions
+%%%% Domain and codomain
+\DeclareMathOperator{\codom}{codom}
+\DeclareMathOperator{\dom}{dom}
+
+%%%% Inverse function
+\newcommand*{\inverseof}[1]{#1^{-1}}
+
+%%%% Support
+\DeclareMathOperator*{\supp}{supp}
+
 %% Order theory
 %%% Lower and upper bounds
-\DeclareMathOperator{\glb}{glb}
-\DeclareMathOperator{\lb}{lb}
-\DeclareMathOperator{\lub}{lub}
-\DeclareMathOperator{\ub}{ub}
+\DeclareMathOperator*{\glb}{glb}
+\DeclareMathOperator*{\lb}{lb}
+\DeclareMathOperator*{\lub}{lub}
+\DeclareMathOperator*{\ub}{ub}
 
 %% Analysis
 %%% Absolute-value macro
@@ -478,6 +518,7 @@ of the `scrbook-preset` bundle]
 \newcommand*{\irrationals}{\numberset{R}\setminus\numberset{N}}
 \newcommand*{\realnumbers}{\numberset{R}}
 \newcommand*{\reals}{\numberset{R}}
+\newcommand*{\realsgreaterthanone}{\numberset{R}_{>1}}
 
 %%%% Complex numbers
 \newcommand*{\complexnumbers}{\numberset{N}}
@@ -541,7 +582,12 @@ of the `scrbook-preset` bundle]
 \newcommand*{\willnotdivide}{\doesnotdivide}
 
 %%%% Integer division
-\DeclareMathOperator{\intdiv}{div}
+%%%% Source: https://tex.stackexchange.com/a/81945
+\newcommand*{\bdiv}{%
+  \nonscript\mskip-\medmuskip\mkern5mu%
+  \mathbin{\operator@font div}\penalty900\mkern5mu%
+  \nonscript\mskip-\medmuskip
+}
 
 %%%% Least common multiple
 \DeclareMathOperator{\lcm}{lcm}
