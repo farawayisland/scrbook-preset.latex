@@ -22,14 +22,16 @@ of the `scrbook-preset` bundle]
 \RequirePackage{scrbook-preset-library} % The library package of
 % the `scrbook-preset` bundle
 \RequirePackage{siunitx} % A comprehensive (SI) units package
+\robustify{\dots}
 \sisetup{%
   exponent-base = {10},
   exponent-product = {\times },
-  group-separator = {.},
+  group-separator = {\,},
   input-decimal-markers = {.},
+  input-digits = {0123456789…\dots},
   input-ignore = {,},
   inter-unit-product = {\,},
-  output-decimal-marker = {,},
+  output-decimal-marker = {.},
   quantity-product = {\ },
   range-phrase = {\text{\ hingga\ }},
   text-series-to-math = true,
@@ -96,6 +98,9 @@ of the `scrbook-preset` bundle]
 \AtBeginDocument{\renewcommand*{\div}{\nabla\cdot}}
 \newcommand*{\curl}{\nabla\times}
 \newcommand*{\laplacian}{\nabla^2}
+
+%%% Nth roots
+\newcommand*{\nthroot}[1][n]{\sqrt[#1]}
 
 %%% Integrals
 
@@ -309,6 +314,7 @@ of the `scrbook-preset` bundle]
 \newcommand*{\arenotin}{\isnotin}
 \newcommand*{\beingin}{\isin}
 \newcommand*{\notbeingin}{\isnotin}
+\newcommand*{\contains}{\ni}
 \newcommand*{\isin}{\in}
 \newcommand*{\isnotin}{\notin}
 \newcommand*{\willbein}{\isin}
@@ -316,8 +322,12 @@ of the `scrbook-preset` bundle]
 
 %%% Set-theoretic binary relations
 %%%% Set-inclusion (subset relation)
+\newcommand*{\includes}{\supseteq}
 \newcommand*{\isapropersubsetof}{\subset}
+\newcommand*{\isapropersupersetof}{\supset}
 \newcommand*{\isasubsetof}{\subseteq}
+\newcommand*{\isasupersetof}{\supseteq}
+\newcommand*{\properlyincludes}{\supset}
 
 %%% Set-theoretic binary operations
 %%%% Intersection
