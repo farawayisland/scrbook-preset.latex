@@ -15,11 +15,24 @@ the `scrbook-preset` bundle]
 \RequirePackage{graphicx} % Enhanced support for graphics
 \RequirePackage{kantlipsum} % Generate sentences in Kant's style
 \RequirePackage{lipsum} % Easy access to the Lorem Ipsum and other dummy texts
+\RequirePackage{listings} % Typeset source code listings using LaTeX
+\lstset{
+  basicstyle = \scriptsize\ttfamily,
+  firstnumber = 1,
+  numberfirstline = true,
+  numbers = left,
+  numbersep = 1.5em,
+  numberstyle = \tiny\ttfamily,
+  stepnumber = 5,
+  tabsize = 2,
+}
 % \let\CheckCommand\providecommand
 % See https://tex.stackexchange.com/a/511714 and
 % https://github.com/schlcht/microtype/issues/53
 \RequirePackage[babel, nopatch = eqnum]{microtype}
 % Subliminal refinements towards typographical perfection
+\RequirePackage{minted2} % Highlighted source code for LaTeX
+\renewcommand*{\theFancyVerbLine}{\tiny\ttfamily\arabic{FancyVerbLine}}
 \RequirePackage{multirow} % Create tabular cells spanning multiple rows
 \RequirePackage{nicematrix}
 % Improve the typesetting of mathematical matrices with PGF
