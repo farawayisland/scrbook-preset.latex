@@ -6,6 +6,7 @@ the `scrbook-preset` bundle]
 \RequirePackage{comment} % Selectively include/exclude portions of text
 \RequirePackage{graphicx} % Enhanced support for graphics
 \RequirePackage{mathtools} % Mathematical tools to use with `amsmath`
+\RequirePackage{minted2} % Highlighted source code for LaTeX
 \RequirePackage{scalerel} % Constrained scaling and stretching of objects
 \RequirePackage{scaletextbullet} % Resize the \textbullet without changing its
 %% vertical center
@@ -86,6 +87,10 @@ the `scrbook-preset` bundle]
 \ExplSyntaxOff
 
 % ENVIRONMENTS
+%% `Monospaced` environment
+%% Source: https://tex.stackexchange.com/a/128876
+\newenvironment{Monospaced}{\ttfamily}{\par}
+
 %% `Solution` and `SpaceSavingSolution` environments
 %% Source: https://tex.stackexchange.com/a/434069
 \newif\ifDisplaySpaceSavingSolutions
@@ -229,6 +234,29 @@ the `scrbook-preset` bundle]
 \DeclareRobustCommand{\textsquarebullet}{%
   \makebox[0.4125em]{\raisebox{0.45ex}{\vrule height 0.5775ex depth -0.0825ex%
   width 0.495ex}}%
+}
+
+% SOURCE-CODE TYPESETTING COMMANDS
+%% C
+\newmintedfile[inputc]{c}{
+  autogobble,
+  firstnumber = 1,
+  fontfamily = tt,
+  fontsize = \scriptsize,
+  frame = single,
+  linenos,
+  stepnumber = 5,
+}
+
+%% Python
+\newmintedfile[inputpython]{python}{
+  autogobble,
+  firstnumber = 1,
+  fontfamily = tt,
+  fontsize = \scriptsize,
+  frame = single,
+  linenos,
+  stepnumber = 5,
 }
 
 % TABULAR COMMANDS
