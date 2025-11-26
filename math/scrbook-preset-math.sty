@@ -606,4 +606,12 @@ of the `scrbook-preset` bundle]
 \newcommand*{\ceq}{\equiv}
 \NewDocumentCommand{\congmod}{m m m}{#1 \ceq #2 \pmod #3}
 
+%% Combinatorics
+%%% Combinations
+\newcommand*{\comb}[2]{\prescript{}{#1}{\mathbf{C}}_{#2}}
+\newcommand*{\nchoosek}[2]{\binom{\ifblank{#1}{n}{#1}}{\ifblank{#2}{k}{#2}}}
+
+%%% Permutations
+\newcommand*{\perm}[2]{\prescript{}{#1}{\mathbf{P}}_{#2}}
+
 \endinput
