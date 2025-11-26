@@ -3,8 +3,13 @@
 \ProvidesPackage{scrbook-preset-layout-languages}[2025/06/01 The languages%
 module of the layout package of the `scrbook-preset` bundle]
 
+\RequirePackage{babel}
+% Multilingual support for LaTeX, LuaLaTeX, XeLaTeX, and Plain TeX
+\RequirePackage{siunitx} % A comprehensive (SI) units package
+\RequirePackage{translations} % Internationalisation of LaTeX2ε packages
+
 % LANGUAGE SETTINGS
-%% Headings language
+%% Headings
 \newcommand*{\headingslanguage}{english}
 \AtBeginDocument{%
   \IfStringsEqualTF{\headingslanguage}{indonesian}{%
@@ -23,6 +28,16 @@ module of the layout package of the `scrbook-preset` bundle]
     \renewcommand*{\propositionname}{Proposisi}
     \renewcommand*{\remarkname}{Komentar}
     \renewcommand*{\theoremname}{Teorema}
+  }{}
+}
+
+%% `siunitx`
+\newcommand{\SISetupBasedOnLang}{%
+  \ifcurrentlanguage{indonesian}{
+    \sisetup{
+      output-decimal-marker = {,},
+      range-phrase = {\text{\ hingga\ }},
+    }
   }{}
 }
 
